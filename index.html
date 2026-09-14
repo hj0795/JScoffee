@@ -2141,6 +2141,54 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           gap: 16px;
         }
       }
+
+      /* 동명이인 선택 */
+      #teacher-choices {
+        display: grid;
+        gap: 12px;
+        margin: 20px 0;
+      }
+      .teacher-choice {
+        display: grid;
+        gap: 10px;
+        width: 100%;
+        text-align: left;
+        padding: 18px;
+        border: 1px solid #d6e4dc;
+        border-radius: 12px;
+        background: #f8fbf8;
+        color: #263f34;
+      }
+      .teacher-choice:hover,
+      .teacher-choice:focus-visible {
+        background: #edf6ef;
+        border-color: #528b70;
+      }
+      .choice-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .choice-heading strong {
+        font-size: 18px;
+      }
+      .choice-subject {
+        padding: 4px 9px;
+        border-radius: 6px;
+        background: #e4eee6;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .choice-duty {
+        font-size: 15px;
+        font-weight: 650;
+      }
+      .teacher-choice small {
+        color: #667b6e;
+        font-size: 12px;
+        line-height: 1.5;
+      }
     </style>
   </head>
   <body>
@@ -2430,6 +2478,13 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       </footer>
     </main>
     <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <dialog id="teacher-choice-dialog" class="modal small">
+      <button type="button" class="close-dialog" data-close aria-label="닫기">×</button>
+      <h2>어느 선생님인가요?</h2>
+      <p id="teacher-choice-message"></p>
+      <div id="teacher-choices"></div>
+      <p class="field-note">과목과 담임·부담임 정보를 확인하고 선택해 주세요.</p>
+    </dialog>
     <dialog id="password-dialog" class="modal small">
       <form id="password-form">
         <button type="button" class="close-dialog" data-close aria-label="닫기">×</button>
@@ -2593,6 +2648,19 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         if (!key) return null;
         const exact = teachers.find((t) => norm(t.name) === key);
         if (exact) return exact;
+        const tagged = key.match(/^(.*?)(\([^()]+\))$/);
+        if (tagged) {
+          const matches = teachers.filter((t) => {
+            const other = norm(t.name).match(/^(.*?)(\([^()]+\))$/);
+            return (
+              other &&
+              tagged[2] === other[2] &&
+              ((tagged[1].length === other[1].length + 1 && tagged[1].slice(1) === other[1]) ||
+                (other[1].length === tagged[1].length + 1 && other[1].slice(1) === tagged[1]))
+            );
+          });
+          return matches.length === 1 ? matches[0] : null;
+        }
         const loose = teachers.filter((t) => norm(t.name.replace(/\([^)]*\)/g, "")) === key);
         return loose.length === 1 ? loose[0] : null;
       }
@@ -2906,6 +2974,104 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         const result = { kind, year, semester, pageCount: pages.length, entities };
         validateTimetable(result, kind);
         return result;
+      }
+
+      // firebase-work/teacher-identity.mjs
+      var splitName = (name) => {
+        const match = norm(name).match(/^(.*?)(\([^()]+\))?$/);
+        return { base: match[1], tag: match[2] || "" };
+      };
+      function teacherAliases(teacher, state2) {
+        const { base, tag } = splitName(teacher.name);
+        const aliases = /* @__PURE__ */ new Set([norm(teacher.name)]);
+        if (!tag) return [...aliases];
+        const assigned = [
+          ...Object.values(state2.assignments.roles),
+          ...state2.assignments.homerooms.flatMap((row) => [row.teacher, row.assistant]),
+        ];
+        for (const name of assigned) {
+          const other = splitName(name);
+          if (
+            other.tag === tag &&
+            other.base.length === base.length + 1 &&
+            other.base.slice(1) === base
+          )
+            aliases.add(norm(name));
+        }
+        if (aliases.size === 1) {
+          const full = state2.teachers.entities.filter((t) => {
+            const other = splitName(t.name);
+            return (
+              !other.tag && other.base.length === base.length + 1 && other.base.slice(1) === base
+            );
+          });
+          if (full.length === 1) aliases.add(norm(full[0].name) + tag);
+        }
+        return [...aliases];
+      }
+      function findTeacherCandidates(raw, state2) {
+        const query = splitName(raw);
+        if (!query.base) return [];
+        if (query.tag) {
+          const exact = resolveTeacher(raw, state2.teachers.entities);
+          return exact ? [exact] : [];
+        }
+        return state2.teachers.entities.filter((t) =>
+          teacherAliases(t, state2).some((alias) => splitName(alias).base === query.base),
+        );
+      }
+      function teacherDetails(teacher, state2) {
+        const aliases = teacherAliases(teacher, state2);
+        const displayName = aliases.reduce(
+          (longest, name) => (name.length > longest.length ? name : longest),
+          teacher.name,
+        );
+        const courses = [
+          ...new Set(
+            teacher.slots
+              .flat()
+              .map((cell) => cell.split("\n")[0])
+              .filter(Boolean),
+          ),
+        ];
+        const tag = splitName(teacher.name).tag;
+        const byTag = {
+          "(수)": "수학",
+          "(사)": "사회",
+          "(과)": "과학",
+          "(영)": "영어",
+          "(국)": "국어",
+        };
+        let subject = teacher.subject || byTag[tag];
+        if (!subject) {
+          const text = courses.join(" ");
+          const groups = [
+            [/미적|경수|전수|수선|대수|기하|확통/, "수학"],
+            [/물에|물리|화학|생명|지구|통과|과탐/, "과학"],
+            [/법사|사문|정법|한국사|세계사|윤리|지리|통사|경제/, "사회"],
+            [/영어|영독|영작|영회/, "영어"],
+            [/문학|독서|화작|언매|국어/, "국어"],
+          ];
+          subject = groups.find(([pattern]) => pattern.test(text))?.[1] || "과목 확인 필요";
+        }
+        const duties = [];
+        for (const row of state2.assignments.homerooms) {
+          for (const [field, title] of [
+            ["teacher", "담임"],
+            ["assistant", "부담임"],
+          ]) {
+            if (resolveTeacher(row[field], state2.teachers.entities)?.name === teacher.name) {
+              const [grade, room] = row.className.split("-");
+              duties.push(`${grade}학년 ${room}반 ${title}`);
+            }
+          }
+        }
+        return {
+          displayName,
+          subject,
+          duties: duties.length ? duties : ["비담임"],
+          courses: courses.filter((c) => !/^(계발|자율|진로|담창체)$/.test(c)).slice(0, 3),
+        };
       }
 
       // 2. 공용 DB와 전체 교체
@@ -3678,14 +3844,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         renderSummary();
         requestAnimationFrame(positionArrow);
       }
-      function addName(raw) {
-        if (!norm(raw)) return;
-        const entity = resolveTeacher(raw, state.teachers.entities);
-        if (!entity) {
-          toast(`‘${raw.trim()}’ 선생님을 찾을 수 없습니다. PDF의 이름을 확인해 주세요.`, "error");
-          $("#name-input").select();
-          return;
-        }
+      function chooseTeacher(entity) {
         if (selected.includes(entity.name)) {
           toast("이미 추가한 선생님입니다.");
         } else selected.push(entity.name);
@@ -3694,6 +3853,29 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         renderSelected();
         renderTimetable();
         $("#name-input").focus();
+      }
+      function addName(raw) {
+        if (!norm(raw)) return;
+        const candidates = findTeacherCandidates(raw, state);
+        if (candidates.length > 1) {
+          hideSuggestions();
+          $("#teacher-choice-message").textContent =
+            `‘${raw.trim()}’ 이름과 일치하는 선생님이 ${candidates.length}명입니다.`;
+          $("#teacher-choices").innerHTML = candidates
+            .map((teacher) => {
+              const info = teacherDetails(teacher, state);
+              return `<button type="button" class="teacher-choice" data-choose-teacher="${esc(teacher.name)}"><span class="choice-heading"><strong>${esc(info.displayName)}</strong><span class="choice-subject">${esc(info.subject)}</span></span><span class="choice-duty">${info.duties.map(esc).join(" · ")}</span><small>시간표: ${esc(teacher.name)}${info.courses.length ? " · " + info.courses.map(esc).join(", ") : ""}</small></button>`;
+            })
+            .join("");
+          showDialog("#teacher-choice-dialog");
+          return;
+        }
+        if (!candidates.length) {
+          toast(`‘${raw.trim()}’ 선생님을 찾을 수 없습니다. PDF의 이름을 확인해 주세요.`, "error");
+          $("#name-input").select();
+          return;
+        }
+        chooseTeacher(candidates[0]);
       }
       function renderSelected() {
         $("#selected-count").textContent = selected.length + "명";
@@ -3813,8 +3995,8 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         const value = norm($("#name-input").value);
         suggestions = value
           ? state.teachers.entities
+              .filter((e) => teacherAliases(e, state).some((alias) => alias.includes(value)))
               .map((e) => e.name)
-              .filter((name) => norm(name).includes(value))
               .sort((a, b) => a.localeCompare(b, "ko"))
               .slice(0, 9)
           : [];
@@ -3826,7 +4008,12 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         $("#name-suggestions").innerHTML = suggestions
           .map(
             (name, i) =>
-              `<li role="option" aria-selected="false" id="suggestion-${i}" data-suggestion="${esc(name)}">${esc(name)}${selected.includes(name) ? "<small>추가됨</small>" : ""}</li>`,
+              `<li role="option" aria-selected="false" id="suggestion-${i}" data-suggestion="${esc(name)}">${esc(
+                teacherDetails(
+                  state.teachers.entities.find((t) => t.name === name),
+                  state,
+                ).displayName,
+              )}${selected.includes(name) ? "<small>추가됨</small>" : ""}</li>`,
           )
           .join("");
         $("#name-suggestions").classList.remove("hidden");
@@ -4106,6 +4293,16 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           $("#initialize-db").disabled = false;
           drainRecord();
         }
+      });
+      $("#teacher-choices").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-choose-teacher]");
+        if (!button) return;
+        const teacher = state.teachers.entities.find(
+          (t) => t.name === button.dataset.chooseTeacher,
+        );
+        $("#teacher-choice-dialog").close();
+        if (teacher) chooseTeacher(teacher);
+        else toast("시간표가 변경되었습니다. 이름을 다시 입력해 주세요.", "error");
       });
       $("#name-form").addEventListener("submit", (e) => {
         e.preventDefault();
