@@ -2189,6 +2189,97 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         font-size: 12px;
         line-height: 1.5;
       }
+
+      /* 공강 인원과 교실 표시 */
+      .schedule-cell.is-free,
+      .availability-legend .is-free {
+        background: #b7dec6;
+      }
+      .schedule-cell.partial-1,
+      .availability-legend .partial-1 {
+        background: #d1e9d9;
+      }
+      .schedule-cell.partial-2,
+      .availability-legend .partial-2 {
+        background: #e2f0e6;
+      }
+      .schedule-cell.partial-3,
+      .availability-legend .partial-3 {
+        background: #eff7f1;
+      }
+      .partial-heading {
+        font-size: 16px;
+        font-weight: 750;
+        color: #356c4f;
+        margin-bottom: 3px;
+      }
+      .partial-heading small {
+        font-size: 11px;
+        font-weight: 550;
+        margin-left: 2px;
+      }
+      .free-names {
+        color: #4e7960;
+        font-size: 10px;
+        line-height: 1.4;
+        margin-bottom: 6px;
+        word-break: keep-all;
+      }
+      .classroom-list {
+        display: grid;
+        gap: 2px;
+        margin: 4px auto 0;
+        max-width: 160px;
+        font-size: 10px;
+        font-weight: 400;
+        color: #829086;
+        line-height: 1.35;
+      }
+      .classroom-list > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        text-align: left;
+      }
+      .classroom-list > div > span:last-child {
+        text-align: right;
+      }
+      .schedule-cell {
+        padding: 7px 8px;
+      }
+      .availability-legend {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        padding: 0 20px 12px;
+        color: #64816d;
+        font-size: 11px;
+      }
+      .availability-legend:empty {
+        display: none;
+      }
+      .availability-legend span {
+        display: inline-flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .availability-legend i {
+        width: 13px;
+        height: 13px;
+        border: 1px solid #aac9b5;
+        border-radius: 3px;
+      }
+      @media (max-width: 700px) {
+        .classroom-list {
+          font-size: 9px;
+        }
+        .schedule-cell {
+          padding: 5px 3px;
+        }
+        .free-names {
+          font-size: 9px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -2355,6 +2446,11 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
                 <span id="legend-label">공통 공강</span>
               </span>
             </div>
+            <div
+              id="availability-legend"
+              class="availability-legend"
+              aria-label="공강 인원별 색상"
+            ></div>
             <div id="table-container"></div>
             <div class="table-footnote">
               <span id="result-note"></span>
@@ -2380,6 +2476,9 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           </div>
           <div class="section-actions">
             <span class="lock-label" data-lock-label></span>
+            <button id="apply-private-names" class="button outline hidden">
+              관리자 이름 설정 반영
+            </button>
             <button id="assignment-upload" class="button outline hidden">
               <span data-icon="upload"></span>
               배정표 PDF 교체
@@ -2976,6 +3075,25 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         return result;
       }
 
+      // firebase-work/availability.mjs
+      function slotAvailability(people, day, period, state2) {
+        const free = people.filter(
+          (t) => !t.slots[day][period].trim() && !meetingAt(t.name, day, period, state2),
+        );
+        const all = people.length > 0 && free.length === people.length;
+        const partial = people.length >= 4 && people.length <= 6 && free.length >= 3 && !all;
+        return { free, all, partial, missing: people.length - free.length };
+      }
+      function classroomOf(slot) {
+        const lines = slot
+          .split("\n")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const locations = lines.slice(1);
+        if (!locations.length) return "교실 미기재";
+        return locations.filter((s) => !/^\d-[0-9]{1,2}$/.test(s)).join(" ") || locations.join(" ");
+      }
+
       // firebase-work/teacher-identity.mjs
       var splitName = (name) => {
         const match = norm(name).match(/^(.*?)(\([^()]+\))?$/);
@@ -3074,6 +3192,34 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         };
       }
 
+      // firebase-work/name-replacements.mjs
+      function replacePublishedNames(state2, pairs = []) {
+        if (!Array.isArray(pairs) || pairs.length > 30)
+          throw new Error("관리자 이름 설정을 확인해 주세요.");
+        const valid = pairs.map((pair) => {
+          if (
+            typeof pair.from !== "string" ||
+            typeof pair.to !== "string" ||
+            !pair.from.trim() ||
+            !pair.to.trim() ||
+            pair.from === pair.to
+          )
+            throw new Error("관리자 이름 설정을 확인해 주세요.");
+          return { from: pair.from.trim(), to: pair.to.trim() };
+        });
+        function visit(value) {
+          if (typeof value === "string") {
+            for (const pair of valid) value = value.split(pair.from).join(pair.to);
+            return value;
+          }
+          if (Array.isArray(value)) return value.map(visit);
+          if (value && typeof value === "object")
+            return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, visit(v)]));
+          return value;
+        }
+        return visit(state2);
+      }
+
       // 2. 공용 DB와 전체 교체
       function decodeRecord(record) {
         if (
@@ -3100,6 +3246,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       function createSharedStore({ db, auth: auth2, firestore }) {
         const { doc, runTransaction, serverTimestamp, onSnapshot, getDocFromServer } = firestore;
         const current = doc(db, "school", "current");
+        const replacementSettings = doc(db, "privateSettings", "nameReplacements");
         async function isAdministrator() {
           if (!auth2.currentUser) return false;
           const entry = await getDocFromServer(doc(db, "admins", auth2.currentUser.uid));
@@ -3109,7 +3256,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           if (!auth2.currentUser) throw new Error("관리자 잠금을 먼저 해제해 주세요.");
           const keys = Object.keys(sections);
           if (
-            !keys.length ||
             keys.some((key) => !["teachers", "classes", "assignments", "meetings"].includes(key))
           ) {
             throw new Error("교체할 자료를 확인해 주세요.");
@@ -3119,6 +3265,8 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
               const snapshot = await transaction.get(current);
               if (!snapshot.exists())
                 throw new Error("공용 DB가 없습니다. 최초 등록을 먼저 진행해 주세요.");
+              const settings = await transaction.get(replacementSettings);
+              const pairs = settings.exists() ? settings.data().pairs : [];
               const previous = decodeRecord(snapshot.data());
               if (previous.version !== expectedVersion) {
                 const error = new Error(
@@ -3127,8 +3275,9 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
                 error.status = 409;
                 throw error;
               }
-              const next = structuredClone(previous.state);
+              let next = structuredClone(previous.state);
               for (const key of keys) next[key] = structuredClone(sections[key]);
+              next = replacePublishedNames(next, pairs);
               const version = previous.version + 1;
               transaction.set(current, {
                 schemaVersion: 1,
@@ -3173,6 +3322,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         return {
           isAdministrator,
           replaceSections,
+          applyNameReplacements: (version) => replaceSections({}, version),
           initialize,
           async read() {
             const snapshot = await getDocFromServer(current);
@@ -3828,6 +3978,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         if (state && view === "assignments") renderAssignments();
         if (state && view === "meetings") renderMeetings();
         $("#initialize-db").classList.toggle("hidden", !dbMissing || !unlocked);
+        $("#apply-private-names").classList.toggle("hidden", !unlocked);
       }
       function selectMode(next) {
         mode = next;
@@ -3903,14 +4054,17 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           $("#class-select").value = previous;
       }
       function renderTimetable() {
-        const free = freeGrid(selected, state),
-          total = free.flat().filter(Boolean).length,
-          people = selected
-            .map((n) => state.teachers.entities.find((e) => e.name === n))
-            .filter(Boolean),
-          classEntity = state.classes.entities.find((e) => e.name === $("#class-select").value);
+        const people = selected
+          .map((name) => state.teachers.entities.find((t) => t.name === name))
+          .filter(Boolean);
         const teacherMode = mode === "teachers",
-          has = teacherMode ? people.length > 0 : !!classEntity;
+          classEntity = state.classes.entities.find((t) => t.name === $("#class-select").value);
+        const has = teacherMode ? people.length > 0 : !!classEntity;
+        const availability = DAYS.map((_, d) =>
+          TIMES.map((_2, p) => slotAvailability(people, d, p, state)),
+        );
+        const total = availability.flat().filter((a) => a.all).length,
+          partialTotal = availability.flat().filter((a) => a.partial).length;
         $("#table-title").textContent = teacherMode
           ? "주간 공강 시간표"
           : classEntity
@@ -3918,71 +4072,87 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
             : "학반별 시간표";
         $("#result-badge").textContent = teacherMode
           ? has
-            ? `공통 공강 ${total}시간`
+            ? `전체 공강 ${total}시간${partialTotal ? " · 일부 공강 " + partialTotal + "시간" : ""}`
             : "선생님 선택 대기"
           : classEntity
             ? classEntity.name
             : "학반 선택 대기";
-        $("#legend-label").textContent = teacherMode ? "공통 공강" : "수업";
+        $("#legend-label").textContent = teacherMode ? "전체 공강" : "수업";
+        $("#availability-legend").innerHTML =
+          teacherMode && people.length >= 4 && people.length <= 6
+            ? `<span><i class="is-free"></i>전체 ${people.length}명</span>` +
+              Array.from(
+                { length: people.length - 3 },
+                (_, i) =>
+                  `<span><i class="partial-${i + 1}"></i>${people.length - i - 1}명 공강</span>`,
+              ).join("")
+            : "";
         $("#source-status").innerHTML =
           icon("file", 16) +
           `<span>${teacherMode ? state.teachers.entities.length + "명의" : state.classes.entities.length + "개 학반의"} 시간표 반영</span>`;
-        let html = `<table class="timetable"><caption class="sr-only">${teacherMode ? "선택한 교사의 공통 공강" : "선택한 학반의 수업"}: 월요일부터 금요일, 1교시부터 7교시</caption><thead><tr><th scope="col" class="period-column">교시</th>${DAYS.map((d, di) => `<th scope="col"><span class="weekday">${d}<span class="weekday-suffix">요일</span></span>${teacherMode && has ? `<span class="day-count">${free[di].filter(Boolean).length}시간</span>` : ""}</th>`).join("")}</tr></thead><tbody>`;
+        let html = `<table class="timetable"><caption class="sr-only">월요일부터 금요일, 1교시부터 7교시</caption><thead><tr><th scope="col" class="period-column">교시</th>${DAYS.map((d, di) => `<th scope="col"><span class="weekday">${d}<span class="weekday-suffix">요일</span></span>${teacherMode && has ? `<span class="day-count">전체 ${availability[di].filter((a) => a.all).length}시간</span>` : ""}</th>`).join("")}</tr></thead><tbody>`;
         TIMES.forEach((time, p) => {
           html += `<tr class="period-row"><th scope="row" class="period-label"><strong>${p + 1}<span>교시</span></strong><span class="period-time"><span class="time-start">${time[0]}</span><span class="time-separator">–</span><span class="time-end">${time[1]}</span></span></th>`;
           DAYS.forEach((day, d) => {
-            const available = teacherMode && free[d][p],
-              slot = classEntity?.slots[d][p] ?? "",
-              hasMeeting = teacherMode && people.some((e) => meetingAt(e.name, d, p, state)),
-              single = teacherMode && people.length === 1 ? people[0].slots[d][p] : "";
-            const details = teacherMode
-              ? people
-                  .map(
-                    (e) =>
-                      `${e.name}: ${[e.slots[d][p], meetingAt(e.name, d, p, state) ? "부장회의" : ""].filter(Boolean).join(" · ") || "공강"}`,
-                  )
-                  .join("\n")
-              : slot;
+            const a = availability[d][p],
+              slot = classEntity?.slots[d][p] || "";
             let content = "",
-              cls = "";
-            if (available) {
-              cls = "is-free";
-              content = `<div class="free-content">${icon("check", 17)}<span>공통 공강</span></div>`;
+              cls = "",
+              details = "",
+              label = "선택 전";
+            if (teacherMode && has) {
+              const occupied = people.filter((t) => !a.free.includes(t));
+              const locationRows = occupied.map((t) => ({
+                name: t.name,
+                location: meetingAt(t.name, d, p, state) ? "부장회의" : classroomOf(t.slots[d][p]),
+              }));
+              details = people
+                .map(
+                  (t) =>
+                    `${t.name}: ${a.free.includes(t) ? "공강" : locationRows.find((r) => r.name === t.name).location}`,
+                )
+                .join("\n");
+              if (a.all) {
+                cls = "is-free";
+                label = "전체 공강";
+                content = `<div class="free-content">${icon("check", 17)}<span>전체 공강</span></div>`;
+              } else if (a.partial) {
+                cls = `is-partial partial-${a.missing}`;
+                label = `${a.free.length}/${people.length}명 공강`;
+                content = `<div class="partial-heading">${a.free.length}<small>/${people.length}명 공강</small></div><div class="free-names">${a.free.map((t) => esc(t.name)).join(" · ")}</div>`;
+              } else label = "수업·활동";
+              if (people.length === 1 && !a.all) {
+                if (meetingAt(people[0].name, d, p, state)) {
+                  cls = "is-meeting";
+                  content = `<div class="meeting-cell">${icon("clock", 15)}<span>부장회의</span></div>`;
+                } else
+                  content = `<div class="busy-content"><span>${esc(people[0].slots[d][p].split("\n")[0])}</span><small>${esc(classroomOf(people[0].slots[d][p]))}</small></div>`;
+              } else if (locationRows.length) {
+                content += `<div class="classroom-list">${locationRows.map((row) => `<div><span>${esc(row.name)}</span><span>${esc(row.location)}</span></div>`).join("")}</div>`;
+              }
             } else if (!teacherMode && slot) {
               cls = "is-class";
+              label = slot;
+              details = slot;
               content = `<div class="subject-content">${slot
                 .split("\n")
                 .map((s) => `<span>${esc(s)}</span>`)
                 .join("")}</div>`;
-            } else if (hasMeeting) {
-              cls = "is-meeting";
-              content = `<div class="meeting-cell">${icon("clock", 15)}<span>부장회의</span></div>`;
-            } else if (single) {
-              content = `<div class="busy-content"><span>${esc(single.split("\n")[0])}</span><small>${esc(single.split("\n").slice(1).join(" · "))}</small></div>`;
-            } else content = `<span class="cell-dash">${has ? "—" : ""}</span>`;
-            const label = available
-              ? "공통 공강"
-              : hasMeeting
-                ? "부장회의"
-                : teacherMode
-                  ? has
-                    ? "수업·활동"
-                    : "선택 전"
-                  : slot || "수업 없음";
+            }
+            if (!content) content = '<span class="cell-dash">—</span>';
             html += `<td class="schedule-cell ${cls}" title="${esc(details)}" aria-label="${day}요일 ${p + 1}교시 ${esc(label)}">${content}</td>`;
           });
           html += "</tr>";
           if (p === 3)
             html += `<tr class="lunch-row"><th scope="row">점심</th><td colspan="5">${icon("coffee", 15)}<span>점심시간</span><span>12:10–13:10</span></td></tr>`;
         });
-        html += "</tbody></table>";
-        $("#table-container").innerHTML = html;
+        $("#table-container").innerHTML = html + "</tbody></table>";
         $("#result-note").textContent = teacherMode
-          ? !has
-            ? "이름을 추가하면 공통 공강이 색으로 표시됩니다."
-            : total
-              ? `${people.length}명의 시간표에서 겹치는 공강을 표시하고 있습니다.`
-              : "선택한 선생님들이 함께 비는 수업 시간은 없습니다."
+          ? has
+            ? people.length >= 4 && people.length <= 6
+              ? "3명 이상 공강도 표시합니다. 진한 녹색일수록 더 많은 선생님이 공강입니다."
+              : "전체 공강과 수업 중인 선생님의 교실을 표시합니다."
+            : "이름을 추가하면 공통 공강이 색으로 표시됩니다."
           : "빈칸은 PDF에 수업이 기재되지 않은 시간입니다.";
       }
       function hideSuggestions() {
@@ -4291,6 +4461,20 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         } finally {
           busy = false;
           $("#initialize-db").disabled = false;
+          drainRecord();
+        }
+      });
+      $("#apply-private-names").addEventListener("click", async () => {
+        if (!requireAdmin() || busy) return;
+        busy = true;
+        try {
+          await saveAssignments();
+          adopt(await cloud.applyNameReplacements(serverVersion));
+          toast("관리자 이름 설정을 공용 DB에 반영했습니다.", "success");
+        } catch (error) {
+          toast(errorText(error), "error", 6e3);
+        } finally {
+          busy = false;
           drainRecord();
         }
       });
@@ -5108,7 +5292,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
               ]
             },
             {
-              "name": "정지원",
+              "name": "권보영",
               "page": 7,
               "slots": [
                 [
