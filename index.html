@@ -2573,6 +2573,41 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         .meal-card-inner { transition: none !important; }
         .meal-card.is-animating .meal-card-inner { will-change: auto; }
       }
+
+      /* 모바일 전용: 달력 접기/펼치기 + 날짜·급식 카드 축소 (PC는 위 규칙 그대로 유지) */
+      @media (max-width: 760px) {
+        .daily-overview .calendar-panel { height: auto !important; min-height: 0 !important; padding: 8px 10px !important; grid-template-rows: auto !important; }
+        .daily-overview .calendar-head { cursor: pointer; margin-bottom: 6px !important; }
+        .daily-overview .calendar-head h3 { font-size: 13px !important; }
+        .daily-overview .calendar-head::after { content: "▾"; margin-left: 4px; font-size: 10px; color: #8a97ab; transition: transform .18s; }
+        .daily-overview .calendar-panel.is-collapsed .calendar-head { margin-bottom: 0 !important; }
+        .daily-overview .calendar-panel.is-collapsed .calendar-head::after { transform: rotate(-90deg); }
+        .daily-overview .calendar-panel.is-collapsed .calendar-weekdays,
+        .daily-overview .calendar-panel.is-collapsed .calendar-grid,
+        .daily-overview .calendar-panel.is-collapsed .calendar-legend { display: none !important; }
+
+        .daily-date-stack, .daily-overview .meal-card, .daily-overview .meal-card-inner { height: 148px !important; }
+        .daily-overview .date-strip { padding: 8px 10px !important; gap: 4px !important; }
+        .daily-overview .date-strip-value { font-size: 15px !important; }
+        .date-nav-button { width: 24px !important; height: 23px !important; font-size: 14px !important; }
+        .today-button { height: 23px !important; padding: 0 8px !important; font-size: 10px !important; }
+        .daily-overview .today-event { padding: 8px 12px !important; }
+        .daily-overview .today-event strong { font-size: 10px !important; }
+        .daily-overview .today-event span { font-size: 11.5px !important; line-height: 1.4 !important; }
+
+        .daily-overview .meal-face { padding: 9px 10px 30px !important; }
+        .daily-overview .meal-face-head { margin-bottom: 4px !important; }
+        .daily-overview .meal-face h3 { font-size: 13px !important; }
+        .daily-overview .meal-face small { font-size: 9px !important; }
+        .meal-actions { bottom: 6px !important; left: 10px !important; right: 10px !important; }
+
+        /* 중식/석식 메뉴를 줄바꿈 없이 한 줄로 나열해 높이를 줄임 */
+        .daily-overview .meal-list { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; overflow-y: hidden !important; gap: 8px !important; font-size: 10px !important; line-height: 1.2 !important; scrollbar-width: none !important; }
+        .daily-overview .meal-list::-webkit-scrollbar { display: none !important; height: 0 !important; }
+        .daily-overview .meal-list li { padding-left: 8px !important; white-space: nowrap !important; flex: 0 0 auto !important; }
+        .daily-overview .meal-list li::before { top: 50% !important; transform: translateY(-50%) !important; }
+        .daily-overview .meal-empty { font-size: 10px !important; }
+      }
     </style>
   </head>
   <body>
@@ -2645,7 +2680,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
 
 
       <section id="daily-overview" class="daily-overview" aria-label="날짜별 학사 정보와 급식">
-        <section id="calendar-panel" class="calendar-panel" aria-label="학사달력"><div class="calendar-head"><h3 id="calendar-month-label">학사달력</h3><div class="calendar-head-actions"><button id="calendar-prev" type="button" aria-label="이전 달">‹</button><button id="calendar-next" type="button" aria-label="다음 달">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-legend" aria-label="달력 색상 설명"><span><i class="exam"></i>시험</span><span><i class="evaluation"></i>학력평가·모의고사</span><span><i class="club"></i>동아리</span><span><i class="restriction"></i>체험학습 금지</span><span><i class="holiday"></i>공휴일</span></div></section>
+        <section id="calendar-panel" class="calendar-panel is-collapsed" aria-label="학사달력"><div class="calendar-head"><h3 id="calendar-month-label">학사달력</h3><div class="calendar-head-actions"><button id="calendar-prev" type="button" aria-label="이전 달">‹</button><button id="calendar-next" type="button" aria-label="다음 달">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-legend" aria-label="달력 색상 설명"><span><i class="exam"></i>시험</span><span><i class="evaluation"></i>학력평가·모의고사</span><span><i class="club"></i>동아리</span><span><i class="restriction"></i>체험학습 금지</span><span><i class="holiday"></i>공휴일</span></div></section>
         <div class="daily-date-stack">
           <div class="date-strip">
             <div class="date-strip-actions">
@@ -5705,6 +5740,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       $("#date-next").addEventListener("click",()=>{const date=dateKeyToDate(selectedDate);date.setDate(date.getDate()+1);setSelectedDate(dateToKey(date));});
       $("#date-today").addEventListener("click",()=>setSelectedDate(localDateKey()));
       $("#calendar-prev").addEventListener("click",()=>calendarMonthShift(-1)); $("#calendar-next").addEventListener("click",()=>calendarMonthShift(1));
+      $("#calendar-panel").querySelector(".calendar-head").addEventListener("click",(event)=>{if(event.target.closest("button"))return;$("#calendar-panel").classList.toggle("is-collapsed");});
       $("#calendar-grid").addEventListener("click",(event)=>{const button=event.target.closest("[data-calendar-date]");if(button)setSelectedDate(button.dataset.calendarDate);});
       $("#meal-flip").addEventListener("click", () => setMealFace(!$("#meal-card").classList.contains("is-flipped")));
       $("#meal-card").addEventListener("click", (event) => {
