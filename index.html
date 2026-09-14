@@ -2410,6 +2410,16 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       @media (max-width: 900px) { .daily-content-grid { grid-template-columns: minmax(0, 1fr) 220px; } }
       @media (max-width: 700px) { .daily-content-grid { grid-template-columns: 1fr; } .calendar-panel { order: 2; } .meal-card { min-height: 105px; } .meal-card-inner { min-height: 105px; } }
 
+      /* 최종 접근성 보정 */
+      .schedule-cell.is-free, .schedule-cell.is-free * { color:#fff !important; text-shadow:0 1px 2px rgba(0,0,0,.55) !important; }
+      .schedule-cell.is-free .classroom-list, .schedule-cell.is-free .classroom-list * { color:#f5fffa !important; }
+      .schedule-cell.partial-1, .schedule-cell.partial-1 * { color:#123d2b !important; }
+      .schedule-cell.partial-2, .schedule-cell.partial-2 * { color:#174932 !important; }
+      .schedule-cell.partial-3, .schedule-cell.partial-3 * { color:#24543c !important; }
+      .schedule-cell .operation-label { color:#5a431f !important; }
+
+      /* 메인: 날짜·일정·급식·달력을 시간표 위 작은 가로 카드로 배치 */
+      .workspace{display:flex;flex-direction:column;gap:10px}.daily-overview{order:0;display:grid;grid-template-columns:minmax(190px,1.15fr) minmax(170px,1fr) minmax(180px,1.1fr) minmax(210px,1.25fr);gap:8px;align-items:stretch;margin:0 0 2px}#timetable-view{order:1}.date-strip,.today-event,.meal-card,.calendar-panel{min-width:0;height:112px;min-height:112px;box-sizing:border-box}.date-strip{padding:9px 10px;border-radius:8px}.date-strip-label{font-size:10px}.date-strip-value{font-size:clamp(16px,1.7vw,21px)}.date-strip-actions{gap:3px}.date-nav-button{width:25px;height:25px;font-size:13px}.today-button{height:25px;padding:0 6px;font-size:10px}.today-event{display:flex;align-content:center;align-items:center;padding:9px 10px;border-left-width:3px;border-radius:8px;line-height:1.3}.today-event strong{font-size:10px}.today-event span{font-size:12px}.daily-content-grid{display:contents}.meal-card{perspective:900px}.meal-card-inner{min-height:112px;height:112px}.meal-face{padding:9px 10px;border-radius:8px}.meal-face-head{margin-bottom:3px}.meal-face h3{font-size:14px}.meal-face small{font-size:9px}.meal-list{gap:2px;font-size:10px;line-height:1.2}.meal-empty{font-size:10px}.meal-hint{padding-top:3px;font-size:8px}.calendar-panel{padding:7px;border-radius:8px}.calendar-head{margin-bottom:3px}.calendar-head h3{font-size:12px}.calendar-head-actions button{width:22px;height:22px}.calendar-weekdays,.calendar-grid{gap:1px}.calendar-day{min-height:11px;height:11px;padding:1px;border-radius:2px}.calendar-day.is-selected{border-width:1px;padding:1px}.calendar-day-number{font-size:8px;line-height:1}.calendar-day-event,.calendar-day-mark,.calendar-badges{display:none!important}.calendar-legend{margin-top:3px;gap:3px 6px;font-size:7px;line-height:1}.calendar-legend i{width:7px;height:7px}#friday-note{display:none!important}@media(max-width:900px){.daily-overview{grid-template-columns:repeat(4,minmax(145px,1fr));overflow-x:auto}.daily-overview>*{min-width:145px}}@media(max-width:620px){.daily-overview{grid-template-columns:repeat(4,minmax(138px,1fr))}.date-strip,.today-event,.meal-card,.calendar-panel{height:104px;min-height:104px}.meal-card-inner{height:104px;min-height:104px}}
     </style>
   </head>
   <body>
@@ -2498,9 +2508,8 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
               <section class="meal-face meal-back" aria-label="석식" aria-hidden="true"><div class="meal-face-head"><h3>석식</h3><small id="meal-dinner-date"></small></div><ul id="meal-dinner-list" class="meal-list"></ul><p id="meal-dinner-empty" class="meal-empty hidden"></p><p class="meal-hint">카드를 누르면 중식으로 돌아옵니다.</p></section>
             </div>
           </div>
-          <section id="calendar-panel" class="calendar-panel" aria-label="학사달력"><div class="calendar-head"><h3 id="calendar-month-label">학사달력</h3><div class="calendar-head-actions"><button id="calendar-prev" type="button" aria-label="이전 달">‹</button><button id="calendar-next" type="button" aria-label="다음 달">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-legend" aria-label="달력 색상 설명"><span><i class="exam"></i>시험</span><span><i class="evaluation"></i>학력평가·모의고사</span><span><i class="club"></i>동아리</span><span><i class="restriction"></i>체험학습 제외</span></div></section>
+          <section id="calendar-panel" class="calendar-panel" aria-label="학사달력"><div class="calendar-head"><h3 id="calendar-month-label">학사달력</h3><div class="calendar-head-actions"><button id="calendar-prev" type="button" aria-label="이전 달">‹</button><button id="calendar-next" type="button" aria-label="다음 달">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-legend" aria-label="달력 색상 설명"><span><i class="exam"></i>시험</span><span><i class="evaluation"></i>학력평가·모의고사</span><span><i class="club"></i>동아리</span><span><i class="restriction"></i>체험학습 금지</span></div></section>
         </div>
-        <div id="friday-note" class="friday-note"></div>
       </section>
       <div id="draft-banner" class="notice hidden" role="status">
         <span id="save-message"></span>
@@ -2998,7 +3007,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       function normalizeExtendedState(s) {
         s = s || {};
         const defaults = defaultSourceFiles();
-        const files = { ...defaults, ...(s.sourceFiles || {}) };
+        const files = { ...defaults, ...(s.sourceFiles || {}) }; const labelAliases={teacherTimetable:"teachers",classTimetable:"classes",restrictionPeriods:"restrictions"}; for(const [legacyKey,canonicalKey] of Object.entries(labelAliases)) if(files[legacyKey]&&!s.sourceFiles?.[canonicalKey]) files[canonicalKey]={...files[canonicalKey],...files[legacyKey]};
         for (const def of SOURCE_DEFS) files[def.key] = { ...defaults[def.key], ...(files[def.key] || {}), initialName: files[def.key]?.initialName || def.initialName, displayName: files[def.key]?.displayName || s[def.field]?.filename || def.initialName, uploadedName: files[def.key]?.uploadedName || s[def.field]?.filename || def.initialName };
         s.sourceFiles = files;
         s.fridayPlans = s.fridayPlans || { year: 2026, semester: 2, entries: [], filename: "", updatedAt: null, revision: "" }; s.fridayPlans.entries = Array.isArray(s.fridayPlans.entries) ? s.fridayPlans.entries : [];
@@ -3434,6 +3443,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           state: state2,
           sourceFileLabels,
           sourceFileLabelsRevision: record.sourceFileLabelsRevision || "",
+          changedSections: Array.isArray(record.changedSections) ? record.changedSections : null,
           updatedAt: record.updatedAt?.toDate?.().toISOString() ?? null,
         };
       }
@@ -3504,19 +3514,22 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
               let next = structuredClone(previous.state);
               for (const key of keys) next[key] = structuredClone(sections[key]);
               next = replacePublishedNames(next, pairs);
+              const changedSections = pairs.length ? [...STATE_SECTION_KEYS] : keys;
               const version = previous.version + 1;
               transaction.set(current, {
                 schemaVersion: 1,
                 version,
                 payload: encodeState(next),
+                changedSections,
                 updatedAt: serverTimestamp(),
                 updatedBy: auth2.currentUser.uid,
-                 ...(previous.sourceFileLabels ? { sourceFileLabels: previous.sourceFileLabels } : {}),
-                 ...(previous.sourceFileLabelsRevision ? { sourceFileLabelsRevision: previous.sourceFileLabelsRevision } : {}),
-               });
+                ...(previous.sourceFileLabels ? { sourceFileLabels: previous.sourceFileLabels } : {}),
+                ...(previous.sourceFileLabelsRevision ? { sourceFileLabelsRevision: previous.sourceFileLabelsRevision } : {}),
+              });
                return {
                  version,
                  state: next,
+                 changedSections,
                  sourceFileLabels: previous.sourceFileLabels || {},
                  sourceFileLabelsRevision: previous.sourceFileLabelsRevision || "",
                };
@@ -3546,10 +3559,11 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
               schemaVersion: 1,
               version: 1,
               payload,
+              changedSections: [...STATE_SECTION_KEYS],
               updatedAt: serverTimestamp(),
               updatedBy: auth2.currentUser.uid,
             });
-            return { version: 1, state: structuredClone(seed) };
+            return { version: 1, state: structuredClone(seed), changedSections: [...STATE_SECTION_KEYS] };
           });
         }
         return {
@@ -3563,6 +3577,8 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
             return snapshot.exists() ? decodeRecord(snapshot.data()) : null;
           },
           subscribe(onData, onError) {
+            let lastVersion = null;
+            let lastLabelsRevision = "";
             return onSnapshot(
               current,
               (snapshot) => {
@@ -3572,7 +3588,27 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
                   return;
                 }
                 try {
-                  onData({ record: snapshot.exists() ? decodeRecord(snapshot.data()) : null });
+                  const raw = snapshot.exists() ? snapshot.data() : null;
+                  const version = raw?.version ?? 0;
+                  const labelsRevision = raw?.sourceFileLabelsRevision || "";
+                  if (
+                    raw &&
+                    lastVersion !== null &&
+                    version === lastVersion &&
+                    labelsRevision !== lastLabelsRevision
+                  ) {
+                    lastLabelsRevision = labelsRevision;
+                    onData({
+                      labels: raw.sourceFileLabels || {},
+                      sourceFileLabelsRevision: labelsRevision,
+                      version,
+                    });
+                    return;
+                  }
+                  const record = raw ? decodeRecord(raw) : null;
+                  lastVersion = record?.version ?? 0;
+                  lastLabelsRevision = record?.sourceFileLabelsRevision || "";
+                  onData({ record });
                 } catch (error) {
                   onError(error);
                 }
@@ -3897,6 +3933,18 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         { key: "restrictions", field: "restrictionPeriods", title: "체험학습 금지 기간", initialName: "2026 체험학습 금지 기간 수정.jpg", accept: ".pdf,.jpg,.jpeg,.png" },
       ];
       const SOURCE_DEF_MAP = Object.fromEntries(SOURCE_DEFS.map((item) => [item.key, item]));
+      const STATE_SECTION_KEYS = Object.freeze([
+        "teachers",
+        "classes",
+        "assignments",
+        "meetings",
+        "fridayPlans",
+        "clubRooms",
+        "clubTeachers",
+        "calendar",
+        "restrictionPeriods",
+        "sourceFiles",
+      ]);
       var INITIAL_DATA = validateState(JSON.parse($("#initial-data").textContent));
       var cloud = null;
       var auth = null;
@@ -3937,6 +3985,33 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       var connected = false;
       var connecting = false;
       var dbMissing = false;
+      function renderOptionsForSections(changedSections) {
+        if (
+          !Array.isArray(changedSections) ||
+          changedSections.some((key) => !STATE_SECTION_KEYS.includes(key))
+        )
+          return { renderOverview: true };
+        const sections = new Set(changedSections);
+        const timetableDataChanged =
+          sections.has("teachers") ||
+          sections.has("classes") ||
+          sections.has("meetings") ||
+          sections.has("fridayPlans") ||
+          sections.has("clubRooms") ||
+          sections.has("clubTeachers");
+        const selectionDataChanged = sections.has("teachers") || sections.has("classes");
+        return {
+          renderOverview: false,
+          renderSelection: selectionDataChanged,
+          renderDateInfoView: sections.has("fridayPlans") || sections.has("calendar"),
+          renderCalendarView: sections.has("calendar") || sections.has("restrictionPeriods"),
+          renderTimetableView: timetableDataChanged,
+          renderSummaryView: selectionDataChanged,
+          renderFields: selectionDataChanged || sections.has("assignments"),
+          renderMeetingsView: sections.has("assignments") || sections.has("meetings"),
+          renderAdminView: sections.has("sourceFiles"),
+        };
+      }
       var toastTimer;
       function toast(message, type = "info", duration = 3100) {
         clearTimeout(toastTimer);
@@ -4002,13 +4077,21 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           if (displayName) applySourceFileLabel(key, displayName);
         }
       }
-      function adopt(result, {
-        preserveDraft = false,
-        renderFields = true,
-        renderSelection = true,
-        renderOverview = true,
-        renderSummaryView = true,
-      } = {}) {
+      function adopt(
+        result,
+        {
+          preserveDraft = false,
+          renderFields = true,
+          renderSelection = true,
+          renderOverview = true,
+          renderDateInfoView = false,
+          renderCalendarView = false,
+          renderTimetableView = false,
+          renderSummaryView = true,
+          renderMeetingsView = true,
+          renderAdminView = true,
+        } = {},
+      ) {
         if (result.version < serverVersion) return;
         const draft = preserveDraft ? state?.assignments : null;
         state = mergeSourceFileLabels(validateState(result.state), result.sourceFileLabels);
@@ -4020,11 +4103,17 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           renderClassOptions();
           renderSelected();
         }
-        if (renderOverview) renderDailyOverview();
+        if (renderOverview) {
+          renderDailyOverview();
+        } else {
+          if (renderDateInfoView) renderDateInfo();
+          if (renderCalendarView) renderCalendar();
+          if (renderTimetableView) renderTimetable();
+        }
         if (renderSummaryView) renderSummary();
         if (renderFields && view === "assignments") renderAssignments();
-        if (view === "meetings") renderMeetings();
-        if (view === "admin") renderAdmin();
+        if (renderMeetingsView && view === "meetings") renderMeetings();
+        if (renderAdminView && view === "admin") renderAdmin();
         $("#connection-gate").classList.add("hidden");
         $("#main").inert = false;
         syncStatus(dirty ? "변경 내용 저장 대기" : "공용 DB · 실시간 연결");
@@ -4033,6 +4122,17 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         if (event.cached) {
           connected = false;
           syncStatus("공용 DB 연결 확인 중…", true);
+          return;
+        }
+        if (event.labels) {
+          if (
+            state &&
+            event.sourceFileLabelsRevision &&
+            event.sourceFileLabelsRevision !== sourceLabelRevision
+          ) {
+            applySourceFileLabels(event.labels);
+            sourceLabelRevision = event.sourceFileLabelsRevision;
+          }
           return;
         }
         connected = true;
@@ -4072,8 +4172,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           return;
         }
         if (!state || event.record.version > serverVersion) {
-          adopt(event.record);
-          renderLock();
+          adopt(event.record, renderOptionsForSections(event.record.changedSections));
         }
         syncStatus("공용 DB · 실시간 연결");
         renderSaveNotice();
@@ -4121,7 +4220,15 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           try {
             const result = await cloud.replaceSections({ assignments: data }, serverVersion);
             dirty = epoch !== editEpoch;
-            adopt(result, { preserveDraft: dirty, renderFields: false });
+            adopt(result, {
+              preserveDraft: dirty,
+              renderFields: false,
+              renderSelection: false,
+              renderOverview: false,
+              renderSummaryView: false,
+              renderMeetingsView: view === "meetings",
+              renderAdminView: false,
+            });
             renderSaveNotice();
           } catch (error) {
             conflicted = error.status === 409;
@@ -4171,12 +4278,13 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         }
         sections.sourceFiles = files;
         const result = await cloud.replaceSections(sections, serverVersion);
-        adopt(result); renderSaveNotice();
+        adopt(result, renderOptionsForSections(result.changedSections || Object.keys(sections)));
+        renderSaveNotice();
       }
       async function updateMeetings(data) {
         await saveAssignments();
         const result = await cloud.replaceSections({ meetings: data }, serverVersion);
-        adopt(result);
+        adopt(result, renderOptionsForSections(result.changedSections || ["meetings"]));
       }
       function fileExtension(file) { return (file?.name?.split(".").pop() || "").toLowerCase(); }
       function rowsFromPages(pages) { return pages.flatMap((page) => linesOf(page.items, Math.max(3, page.height / 220)).map((row) => ({ ...row, page }))); }
@@ -4192,10 +4300,22 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       function parseClubTeachersPages(pages) { const entities=state?.teachers?.entities||[]; const splitTeachers=(value)=>{ const compact=norm(value); const matches=entities.filter((teacher)=>compact.includes(norm(teacher.name))).sort((a,b)=>norm(b.name).length-norm(a.name).length).map((teacher)=>teacher.name); return matches.length?[...new Set(matches)]:value.split(/[,/·]+|\s{2,}/).map((x)=>x.trim()).filter(Boolean); }; const entries=[]; for (const row of rowsFromPages(pages)) { const cells=groupPdfRowCells(row,Math.max(18,row.page.width/55)); const ni=cells.findIndex((cell)=>/^\d{1,3}$/.test(cell.text)); if (ni<0||!cells[ni+1]||!cells[ni+2]) continue; const club=cells[ni+1].text.trim(), teachers=splitTeachers(cells[ni+2].text); if (club&&teachers.length) entries.push({number:cells[ni].text,club,teachers}); } const unique=[]; for (const entry of entries) if (!unique.some((old)=>old.number===entry.number&&norm(old.club)===norm(entry.club))) unique.push(entry); if (!unique.length) throw Error("동아리 담당교사표에서 동아리 행을 읽지 못했습니다."); return {entries:unique}; }
       function parseFridayPlansText(text) { const entries=[]; for (const match of text.matchAll(/(\d{1,2})\s*\/\s*(\d{1,2})(?:\s*\([^)]*\))?/g)) { const month=+match[1],day=+match[2]; if(month<1||month>12||day<1||day>31) continue; const context=text.slice(Math.max(0,match.index-20),Math.min(text.length,match.index+220)).replace(/\s+/g," "); const club=context.match(/동아리[^\n]{0,50}/)?.[0]?.trim(), repeat=context.match(/([월화수목금])\s*([56])교시/), event=context.match(/연화제|중간고사|기말고사|추석 연휴|한글날|성탄절/), date=`2026-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`; let entry; if(club) entry={date,type:"club",label:club.slice(0,80),note:"5~7교시 동아리",periods:[4,5,6]}; else if(repeat) entry={date,type:"repeat",label:`${repeat[1]} ${repeat[2]}교시 반복`,note:"7교시 반복",periods:[6],sourceDay:DAYS.indexOf(repeat[1]),sourcePeriod:+repeat[2]-1}; else if(event) entry={date,type:"event",label:event[0],note:"",periods:[6]}; else continue; if(!entries.some((old)=>old.date===entry.date)) entries.push(entry); } if(!entries.length) throw Error("금요일 운영표에서 날짜별 규칙을 읽지 못했습니다."); return {year:2026,semester:2,entries}; }
       function calendarTags(text) { const tags=[]; if(/중간고사|기말고사/.test(text)) tags.push("exam"); if(/전국연합학력평가|학력평가|모평|모의/.test(text)) tags.push("evaluation"); if(/동아리활동|동아리/.test(text)) tags.push("club"); return tags; }
-      function parseCalendarText(text) { const days=[]; let year=2026,month=8; for (const line of text.split(/\r?\n/).map((x)=>x.trim()).filter(Boolean)) { const heading=line.match(/(?:#\s*)?(20\d{2})\s*(?:년\s*)?(\d{1,2})\s*(?:월|(?:January|February|March|April|May|June|July|August|September|October|November|December))/i); if(heading){year=+heading[1];month=+heading[2];} const dm=line.match(/^(\d{1,2})(?:\s+|$)(.*)$/); if(!dm) continue; const day=+dm[1],eventText=dm[2].replace(/!\[\]\([^)]*\)/g,"").trim(); if(day<1||day>31||!eventText) continue; const date=`${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`,old=days.find((item)=>item.date===date); if(old){old.events.push(eventText);old.text=old.events.join(" ");old.tags=calendarTags(old.text);} else days.push({date,events:[eventText],text:eventText,tags:calendarTags(eventText)}); } if(!days.length) throw Error("학사달력에서 날짜별 일정을 읽지 못했습니다."); return {year,semester:2,days}; }
-      function parseRestrictionText(text) { const periods=[]; const normalized=text.replace(/[〜～]/g,"~").replace(/\s+/g," "); for (const match of normalized.matchAll(/(\d{1,2})\s*\/\s*(\d{1,2})[^~\n]{0,12}~\s*(\d{1,2})\s*\/\s*(\d{1,2})/g)) { const start=`2026-${String(+match[1]).padStart(2,"0")}-${String(+match[2]).padStart(2,"0")}`,endYear=+match[3]<+match[1]?2027:2026,end=`${endYear}-${String(+match[3]).padStart(2,"0")}-${String(+match[4]).padStart(2,"0")}`; periods.push({start,end,label:"체험학습 신청 제외 기간"}); } if(!periods.length) throw Error("체험학습 금지 기간 이미지에서 기간을 읽지 못했습니다."); return {periods}; }
-      async function parseAdminSource(kind,pages) { const text=pageText(pages); if(kind==="clubRooms") return parseClubRoomsPages(pages); if(kind==="clubTeachers") return parseClubTeachersPages(pages); if(kind==="fridayPlans") return parseFridayPlansText(text); if(kind==="calendar") return parseCalendarText(text); if(kind==="restrictionPeriods") return parseRestrictionText(text); if(kind==="teachers"||kind==="classes") return parseTimetablePages(pages,kind); throw Error("지원하지 않는 자료 종류입니다."); }
-      async function processAdminSource(kind,file) { if(!requireAdmin()||busy||!file) return; if(kind==="assignments"){ await replaceAssignments({target:{files:[file],value:""}}); return; } busy=true; const def=SOURCE_DEFS.find((item)=>item.key===kind); try { toast(`${def?.title||"자료"}를 읽고 있습니다.`,`info`,1e4); const pages=await readSourcePages(file); const data=await parseAdminSource(kind,pages); await sendUpload([[def.field,file,data]]); renderAdmin(); toast(`${def.title}를 공용 DB에 반영했습니다.`,`success`,4500); } catch(error){ toast(errorText(error),`error`,6500); } finally { busy=false; drainRecord(); renderLock(); } }
+      function cleanCalendarSourceText(value){return String(value||"").replace(/&lt;|&gt;|&amp;|&nbsp;|&#\d+;/gi,(token)=>({"&lt;":"<","&gt;":">","&amp;":"&","&nbsp;":" "}[token.toLowerCase()]||" ")).replace(/<[^>]*>/g," ").replace(/[|¦]/g," ").replace(/\s+/g," ").trim();}
+      function chooseCalendarEvent(values){const items=[...new Set(values.map(cleanCalendarSourceText).map((value)=>value.replace(/^\d{1,2}\s*[일.]?\s*/,"").trim()).filter((value)=>value&&!/^[-–—]+$/.test(value)))];if(!items.length)return"";const priority=[/중간고사|기말고사/,/전국연합학력평가|학력평가|모의|모평/,/개학식|방학식|종업식|졸업식|휴업/,/동아리|연화제/,/교직원|교사/];for(const pattern of priority){const found=items.find((value)=>pattern.test(value));if(found)return found.slice(0,100);}return items[0].slice(0,100);}
+      function parseCalendarText(text,pages=[]){const days=new Map();let year=2026,month=8;const monthNames={january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12};const add=(y,m,d,value)=>{if(d<1||d>31||m<1||m>12||!value)return;const date=`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`,current=days.get(date)||{date,events:[],text:"",tags:[]};if(!current.events.includes(value))current.events.push(value);const representative=chooseCalendarEvent(current.events);current.events=representative?[representative]:current.events.slice(0,1);current.text=representative||"";current.tags=calendarTags(current.text);days.set(date,current);};for(const rawLine of String(text||"").split(/\r?\n/)){const line=cleanCalendarSourceText(rawLine);if(!line)continue;const isMonthHeading=/^(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d{2}$/i.test(line)||/^20\d{2}\s+\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)$/i.test(line);const ymKorean=line.match(/(20\d{2})\s*년?\s*(\d{1,2})\s*월/); const ymEnglishBefore=line.match(/(20\d{2})\s+(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)/i); const ymEnglishAfter=line.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})/i); if(ymKorean){year=+ymKorean[1];month=+ymKorean[2];}else if(ymEnglishBefore){year=+ymEnglishBefore[1];month=monthNames[ymEnglishBefore[3].toLowerCase()]||+ymEnglishBefore[2];}else if(ymEnglishAfter){year=+ymEnglishAfter[3];month=monthNames[ymEnglishAfter[2].toLowerCase()]||+ymEnglishAfter[1];}else{const plainMonth=line.match(/(?:^|\s)(\d{1,2})\s*월(?:\s|$)/);if(plainMonth)month=+plainMonth[1];} if(isMonthHeading) continue;
+          for(const match of line.matchAll(/(?:^|\s|>)(\d{1,2})\s*(?:일|[.)])?\s*([^\d]*?)(?=(?:\s+\d{1,2}\s*(?:일|[.)])?\s)|$)/g))add(year,month,+match[1],cleanCalendarSourceText(match[2]));}if(!days.size&&pages?.length)for(const page of pages)for(const row of linesOf(page.items,Math.max(4,page.height/180))){const line=cleanCalendarSourceText(row.text),ym=line.match(/(20\d{2})\s*년?\s*(\d{1,2})\s*월/)||line.match(/(\d{1,2})\s*월/);if(ym){if(ym[2]){year=+ym[1];month=+ym[2];}else month=+ym[1];}const day=line.match(/(?:^|\s)(\d{1,2})(?:\s|$)/);if(day)add(year,month,+day[1],line.slice((day.index||0)+day[0].length));}if(!days.size)throw Error("학사달력에서 날짜별 일정을 읽지 못했습니다. 그림형 PDF라면 OCR 결과를 확인해 주세요.");return{year,semester:2,days:[...days.values()].sort((a,b)=>a.date.localeCompare(b.date)),ocrParsedAt:new Date().toISOString()};}
+      function parseRestrictionText(text) { const periods=[]; const normalized=text.replace(/[〜～]/g,"~").replace(/\s+/g," "); for (const match of normalized.matchAll(/(\d{1,2})\s*\/\s*(\d{1,2})[^~\n]{0,12}~\s*(\d{1,2})\s*\/\s*(\d{1,2})/g)) { const start=`2026-${String(+match[1]).padStart(2,"0")}-${String(+match[2]).padStart(2,"0")}`,endYear=+match[3]<+match[1]?2027:2026,end=`${endYear}-${String(+match[3]).padStart(2,"0")}-${String(+match[4]).padStart(2,"0")}`; periods.push({start,end,label:"체험학습 금지 기간"}); } if(!periods.length) throw Error("체험학습 금지 기간 이미지에서 기간을 읽지 못했습니다."); return {periods}; }
+      function parseCalendarPageWords(pages){
+        const text=pages.flatMap((page)=>linesOf(page.items,Math.max(4,page.height/180)).map((row)=>row.text)).join("\n");
+        return parseCalendarText(text,pages);
+      }
+      async function parseAdminSource(kind,pages) { const text=pageText(pages); if(kind==="clubRooms") return parseClubRoomsPages(pages); if(kind==="clubTeachers") return parseClubTeachersPages(pages); if(kind==="fridayPlans") return parseFridayPlansText(text); if(kind==="calendar") return parseCalendarPageWords(pages); if(kind==="restrictionPeriods") return parseRestrictionText(text); if(kind==="teachers"||kind==="classes") return parseTimetablePages(pages,kind); throw Error("지원하지 않는 자료 종류입니다."); }
+      async function processAdminSource(kind,file) { if(!requireAdmin()||busy||!file) return; if(kind==="assignments"){ await replaceAssignments({target:{files:[file],value:""}}); return; } busy=true; const def=SOURCE_DEFS.find((item)=>item.key===kind); try { toast(`${def?.title||"자료"}를 읽고 있습니다.`,`info`,1e4); let pages=await readSourcePages(file); let data;
+        if(kind==="calendar"){
+          try{ data=await parseAdminSource(kind,pages); }
+          catch(calendarError){ toast("학사달력 OCR을 한 번 더 실행합니다.","info",4500); pages=await ocrPdfPages(file,()=>{}); data=await parseAdminSource(kind,pages); }
+        }else data=await parseAdminSource(kind,pages);
+        await sendUpload([[def.field,file,data]]); renderAdmin(); toast(`${def.title}를 공용 DB에 반영했습니다.`,`success`,4500); } catch(error){ toast(errorText(error),`error`,6500); } finally { busy=false; drainRecord(); renderLock(); } }
       function isDateInPeriod(key,period){return key>=period.start&&key<=period.end;}
       function calendarDayRecord(key){return state?.calendar?.days?.find((day)=>day.date===key)||null;}
       function selectedCalendarMonthDate(){return dateKeyToDate(calendarMonth+"-01");}
@@ -4214,22 +4334,9 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         }
         $("#calendar-grid").innerHTML=cells.join("");
       }
-      function pickTodayEvent(key){const record=calendarDayRecord(key);if(!record?.events?.length)return"등록된 학사 일정이 없습니다.";for(const pattern of [/중간고사|기말고사/,/전국연합학력평가|학력평가|모평|모의/,/개학식|방학식|종업식|졸업식|휴업/,/동아리|연화제/,/교직원|교사/]){const found=record.events.find((event)=>pattern.test(event));if(found)return found;}return record.events[0];}
-      function renderDailyOverview({ reloadMeals = false } = {}) {
-        const dateLabel = $("#selected-date-label"),
-          eventBox = $("#today-event"),
-          fridayBox = $("#friday-note");
-        if (dateLabel) dateLabel.textContent = formatDateKey(selectedDate);
-        const isToday = selectedDate === localDateKey();
-        const event = state ? pickTodayEvent(selectedDate) : "공용 시간표 연결 후 학사 일정을 표시합니다.";
-        if (eventBox)
-          eventBox.innerHTML = `<strong>${isToday ? "오늘의 일정" : "선택한 날짜 일정"}</strong><span>${esc(event)}</span>`;
-        const plan = state ? planForDate(selectedDate, state) : null;
-        if (fridayBox)
-          fridayBox.innerHTML = plan
-            ? `<strong>${formatDateKey(selectedDate, false)}</strong> · ${esc(plan.label || "학사 일정")}${plan.note ? ` · ${esc(plan.note)}` : ""}`
-            : `<strong>${formatDateKey(selectedDate, false)}</strong> · 별도 금요일 운영 규칙 없음`;
-        renderCalendar();
+      function pickTodayEvent(key) { const record=calendarDayRecord(key), plan=state?planForDate(key,state):null, events=Array.isArray(record?.events)?record.events:[]; if(plan?.type==="club")return "동아리"; if(plan?.type==="repeat")return plan.label||"금요일 반복 수업"; for(const pattern of [/중간고사|기말고사/,/전국연합학력평가|학력평가|모평|모의/,/개학식|방학식|종업식|졸업식|휴업/,/동아리|연화제/,/교직원|교사/]){const found=events.find((event)=>pattern.test(event));if(found)return found;} return events[0]||(plan?.label||"등록된 학사 일정이 없습니다."); }
+      function renderDateInfo(){const dateLabel=$("#selected-date-label"),eventBox=$("#today-event");if(dateLabel)dateLabel.textContent=formatDateKey(selectedDate);const isToday=selectedDate===localDateKey(),event=state?pickTodayEvent(selectedDate):"공용 시간표 연결 후 학사 일정을 표시합니다.";if(eventBox)eventBox.innerHTML=`<strong>${isToday?"오늘의 일정":"선택한 날짜 일정"}</strong><span>${esc(event)}</span>`;}
+      function renderMealsForSelectedDate({ reloadMeals = false } = {}) {
         if (state && (reloadMeals || mealRequestedDate !== selectedDate)) {
           mealRequestedDate = selectedDate;
           loadMeals(selectedDate);
@@ -4237,6 +4344,11 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           renderMealList("#meal-lunch-list", "#meal-lunch-empty", [], "공용 시간표 연결 후 급식을 표시합니다.");
           renderMealList("#meal-dinner-list", "#meal-dinner-empty", [], "공용 시간표 연결 후 급식을 표시합니다.");
         }
+      }
+      function renderDailyOverview({ reloadMeals = false } = {}) {
+        renderDateInfo();
+        renderCalendar();
+        renderMealsForSelectedDate({ reloadMeals });
         if (state) renderTimetable();
       }
       function setSelectedDate(key) {
@@ -4268,26 +4380,27 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           const response=await fetch(url,{headers:{Accept:"application/json"},signal:controller.signal});
           if(!response.ok)throw Error(`급식 API 오류(${response.status})`);
           const payload=await response.json();
-          if(request!==mealRequestId)return;
-          const result={lunch:[],dinner:[]};
-          for(const row of payload?.mealServiceDietInfo?.[1]?.row||[]){
-            const menu=cleanMealText(row.DDISH_NM);
-            if(String(row.MMEAL_SC_CODE)==="2")result.lunch.push(...menu);
-            if(String(row.MMEAL_SC_CODE)==="3")result.dinner.push(...menu);
-          }
-          mealCache.set(key,result);
+           if(request!==mealRequestId)return;
+           const resultInfo=payload?.mealServiceDietInfo?.[0]?.head?.[1]?.RESULT||payload?.mealServiceDietInfo?.[0]?.head?.[0]?.RESULT||payload?.RESULT;
+           const resultCode=String(resultInfo?.CODE||"");
+           if(resultCode&&resultCode!=="INFO-000")throw Error(`NEIS-${resultCode}:${resultInfo?.MESSAGE||"급식 API 응답 오류"}`);
+           const result={lunch:[],dinner:[]};
+           for(const row of payload?.mealServiceDietInfo?.[1]?.row||[]){const menu=cleanMealText(row.DDISH_NM);if(String(row.MMEAL_SC_CODE)==="2")result.lunch.push(...menu);if(String(row.MMEAL_SC_CODE)==="3")result.dinner.push(...menu);}
+           mealCache.set(key,result);
           renderMealList("#meal-lunch-list","#meal-lunch-empty",result.lunch,"등록된 중식이 없습니다.");
           renderMealList("#meal-dinner-list","#meal-dinner-empty",result.dinner,"등록된 석식이 없습니다.");
         }catch(error){
-          if(request!==mealRequestId||error?.name==="AbortError")return;
-          renderMealList("#meal-lunch-list","#meal-lunch-empty",[],"급식 정보를 불러오지 못했습니다.");
-          renderMealList("#meal-dinner-list","#meal-dinner-empty",[],"급식 정보를 불러오지 못했습니다.");
-        }finally{
+           if(request!==mealRequestId||error?.name==="AbortError")return;
+           let message="급식 정보를 불러오지 못했습니다.";const raw=String(error?.message||"");
+           if(raw.includes("NEIS-ERROR-290"))message="NEIS 인증키가 유효하지 않습니다.";else if(raw.includes("NEIS-ERROR-300"))message="NEIS 요청 필수값이 누락되었습니다.";else if(raw.includes("NEIS-INFO-200"))message="선택한 날짜의 급식 정보가 없습니다.";else if(error instanceof TypeError)message="급식 API 연결이 차단되었습니다. 브라우저 CORS 또는 네트워크 설정을 확인해 주세요.";else if(raw)message=raw.slice(0,120);
+           renderMealList("#meal-lunch-list","#meal-lunch-empty",[],message);renderMealList("#meal-dinner-list","#meal-dinner-empty",[],message);
+         }finally{
           if(mealAbortController===controller)mealAbortController=null;
         }
       }
-      async function seedExtensionData(){if(!requireAdmin()||!state||busy)return;if(!window.confirm("첨부된 2026학년도 동아리·금요일 운영·학사달력·체험학습 기간을 공용 DB에 반영할까요? 기존 교사·학반·직책·회의 자료는 유지됩니다."))return;busy=true;try{const sections={fridayPlans:structuredClone(INITIAL_DATA.fridayPlans),clubRooms:structuredClone(INITIAL_DATA.clubRooms),clubTeachers:structuredClone(INITIAL_DATA.clubTeachers),calendar:structuredClone(INITIAL_DATA.calendar),restrictionPeriods:structuredClone(INITIAL_DATA.restrictionPeriods),sourceFiles:structuredClone(INITIAL_DATA.sourceFiles)};adopt(await cloud.replaceSections(sections,serverVersion));toast("첨부 자료의 확장 데이터를 공용 DB에 반영했습니다.","success",5000);}catch(error){toast(errorText(error),"error",6000);}finally{busy=false;drainRecord();renderLock();}}
-      function renderAdmin(){if(!state||!unlocked||!$("#source-file-grid"))return;$("#source-file-grid").innerHTML=SOURCE_DEFS.map((def)=>{const source=state.sourceFiles?.[def.key]||{initialName:def.initialName,displayName:def.initialName,uploadedName:state[def.field]?.filename||""},updated=source.updatedAt?new Date(source.updatedAt).toLocaleString("ko-KR",{dateStyle:"short",timeStyle:"short"}):"초기 등록 자료";return `<article class="source-card" data-source-card="${def.key}"><h3>${esc(def.title)}</h3><div class="source-card-name"><span data-source-name="${def.key}" title="두 번 클릭하면 수정할 수 있습니다.">${esc(source.displayName||source.initialName)}</span><button type="button" class="source-icon-button" data-edit-source="${def.key}" aria-label="${esc(def.title)} 명칭 수정">✎</button><button type="button" class="source-icon-button" data-reset-source="${def.key}" aria-label="${esc(def.title)} 초기 명칭으로 되돌리기">↩</button></div><p>업로드 파일: ${esc(source.uploadedName||state[def.field]?.filename||"없음")}<br>마지막 반영: ${esc(updated)}</p><div class="source-upload-row"><input id="source-input-${def.key}" class="hidden" type="file" accept="${def.accept}" data-source-input="${def.key}"><button type="button" class="button outline" data-source-upload="${def.key}">${icon("upload",16)} 파일 선택</button><span class="source-upload-state">PDF · JPG · PNG</span></div></article>`;}).join("");}
+      async function seedExtensionData(){if(!requireAdmin()||!state||busy)return;if(!window.confirm("첨부된 확장 자료를 한 번에 공용 DB에 반영할까요? 기존 교사·학반·직책·회의 자료는 유지됩니다."))return;busy=true;try{const sections={fridayPlans:structuredClone(INITIAL_DATA.fridayPlans),clubRooms:structuredClone(INITIAL_DATA.clubRooms),clubTeachers:structuredClone(INITIAL_DATA.clubTeachers),calendar:structuredClone(INITIAL_DATA.calendar),restrictionPeriods:structuredClone(INITIAL_DATA.restrictionPeriods),sourceFiles:structuredClone(INITIAL_DATA.sourceFiles)};adopt(await cloud.replaceSections(sections,serverVersion));toast("첨부 자료의 확장 데이터를 공용 DB에 반영했습니다.","success",5000);}catch(error){toast(errorText(error),"error",6000);}finally{busy=false;drainRecord();renderLock();}}
+      async function seedOneExtensionData(key){if(!requireAdmin()||!state||busy)return;const sourceKey=key==="restrictions"?"restrictionPeriods":key;if(!INITIAL_DATA[sourceKey])return;busy=true;try{const result=await cloud.replaceSections({[sourceKey]:structuredClone(INITIAL_DATA[sourceKey])},serverVersion);adopt(result,renderOptionsForSections([sourceKey]));toast(`${SOURCE_DEF_MAP[key]?.title||"자료"} 초기 자료를 반영했습니다.`,"success",3500);}catch(error){toast(errorText(error),"error",6000);}finally{busy=false;drainRecord();renderLock();}}
+      function renderAdmin(){if(!state||!unlocked||!$("#source-file-grid"))return;$("#source-file-grid").innerHTML=SOURCE_DEFS.map((def)=>{const source=state.sourceFiles?.[def.key]||{initialName:def.initialName,displayName:def.initialName,uploadedName:state[def.field]?.filename||""},updated=source.updatedAt?new Date(source.updatedAt).toLocaleString("ko-KR",{dateStyle:"short",timeStyle:"short"}):"초기 등록 자료";return `<article class="source-card" data-source-card="${def.key}"><h3>${esc(def.title)}</h3><div class="source-card-name"><span data-source-name="${def.key}" title="두 번 클릭하면 수정할 수 있습니다.">${esc(source.displayName||source.initialName)}</span><button type="button" class="source-icon-button" data-edit-source="${def.key}" aria-label="${esc(def.title)} 명칭 수정">✎</button><button type="button" class="source-icon-button" data-reset-source="${def.key}" aria-label="${esc(def.title)} 초기 명칭으로 되돌리기">↩</button></div><p>업로드 파일: ${esc(source.uploadedName||state[def.field]?.filename||"없음")}<br>마지막 반영: ${esc(updated)}</p><div class="source-upload-row"><input id="source-input-${def.key}" class="hidden" type="file" accept="${def.accept}" data-source-input="${def.key}"><button type="button" class="button outline" data-source-upload="${def.key}">${icon("upload",16)} 파일 선택</button><span class="source-upload-state">PDF · JPG · PNG</span>${["clubRooms","clubTeachers","fridayPlans","calendar","restrictions"].includes(def.key)?`<button type="button" class="button text-button" data-seed-source="${def.key}">초기자료 반영</button>`:""}</div></article>`;}).join("");}
       async function renameSourceFile(key, reset = false) {
         if (!requireAdmin() || !state || busy) return;
         const def = SOURCE_DEF_MAP[key];
@@ -4754,10 +4867,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           if (row) row[target.dataset.field] = target.value;
         } else return;
         a.updatedAt = /* @__PURE__ */ new Date().toISOString();
-        if (!pending) {
-          persist();
-          renderTimetable();
-        }
+        if (!pending) persist();
       }
       function checkAssignmentInput(event) {
         const e = event.target;
@@ -4946,7 +5056,8 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         busy = true;
         try {
           await saveAssignments();
-          adopt(await cloud.applyNameReplacements(serverVersion));
+          const result = await cloud.applyNameReplacements(serverVersion);
+          adopt(result, renderOptionsForSections(result.changedSections));
           toast("관리자 이름 설정을 공용 DB에 반영했습니다.", "success");
         } catch (error) {
           toast(errorText(error), "error", 6e3);
@@ -5265,7 +5376,8 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           });
         } catch {}
       }
-    </script>
+          document.addEventListener("click",(event)=>{const button=event.target.closest("[data-seed-source]");if(button)seedOneExtensionData(button.dataset.seedSource);});
+</script>
     <!-- 최초 등록 자료: DB가 비어 있을 때 관리자가 한 번만 등록합니다. -->
     <script type="application/json" id="initial-data">
 {
