@@ -2601,13 +2601,31 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         .daily-overview .meal-face small { font-size: 9px !important; }
         .meal-actions { bottom: 6px !important; left: 10px !important; right: 10px !important; }
 
-        /* 중식/석식 메뉴를 줄바꿈 없이 한 줄로 나열해 높이를 줄임 */
-        .daily-overview .meal-list { display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; overflow-x: hidden !important; overflow-y: hidden !important; gap: 8px !important; font-size: 10px !important; line-height: 1.2 !important; scrollbar-width: none !important; }
-        .daily-overview .meal-list::-webkit-scrollbar { display: none !important; height: 0 !important; }
-        .daily-overview .meal-list li { padding-left: 8px !important; white-space: nowrap !important; flex: 0 0 auto !important; }
-        .daily-overview .meal-list li::before { top: 50% !important; transform: translateY(-50%) !important; }
-        .daily-overview .meal-empty { font-size: 10px !important; }
-      }
+  /* 중식/석식 개별 메뉴는 줄바꿈 없이, 전체 목록은 카드 크기에 맞춰 다음 줄로 넘어가도록 수정 */
+.daily-overview .meal-list { 
+  display: flex !important; 
+  flex-direction: row !important; 
+  flex-wrap: wrap !important; 
+  width: 100% !important; /* 👈 가로 길이를 카드 100%로 꽉 잡아주는 핵심 코드 */
+  box-sizing: border-box !important; /* 👈 패딩이나 마진 때문에 밖으로 튀어나가는 것 방지 */
+  overflow: hidden !important; 
+  gap: 8px !important; 
+  font-size: 10px !important; 
+  line-height: 1.4 !important; 
+}
+.daily-overview .meal-list li { 
+  padding-left: 8px !important; 
+  white-space: nowrap !important; /* 개별 메뉴명 중간에 끊기지 않게 보호 */
+  word-break: keep-all !important; /* 단어 단위로 깔끔하게 유지 */
+  flex: 0 0 auto !important; 
+}
+.daily-overview .meal-list li::before { 
+  top: 50% !important; 
+  transform: translateY(-50%) !important; 
+}
+.daily-overview .meal-empty { 
+  font-size: 10px !important; 
+}
     </style>
   </head>
   <body>
