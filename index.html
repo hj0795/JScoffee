@@ -2344,7 +2344,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       .calendar-legend .evaluation { background: #eaf2ff; border-color: #b7ccee; }
       .calendar-legend .club { background: #eef8f1; border-color: #bfddc8; }
       .calendar-legend .restriction { background: #fff4ed; border-color: #f0c9ae; }
-      .calendar-legend .holiday { background: #fff0f1; border-color: #e7adb4; }
+      .calendar-legend .holiday { background: transparent; border-color: #edf0f4; }
       .friday-note { padding: 9px 12px; border: 1px solid #dfe7f0; border-radius: 8px; background: #f8fbff; color: #52647e; font-size: 12px; line-height: 1.45; }
       .friday-note strong { color: #315f99; }
       .source-file-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -2602,7 +2602,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         .meal-actions { bottom: 6px !important; left: 10px !important; right: 10px !important; }
 
         /* 중식/석식 메뉴를 줄바꿈 없이 한 줄로 나열해 높이를 줄임 */
-        .daily-overview .meal-list { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; overflow-y: hidden !important; gap: 8px !important; font-size: 10px !important; line-height: 1.2 !important; scrollbar-width: none !important; }
+        .daily-overview .meal-list { display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; overflow-x: hidden !important; overflow-y: hidden !important; gap: 8px !important; font-size: 10px !important; line-height: 1.2 !important; scrollbar-width: none !important; }
         .daily-overview .meal-list::-webkit-scrollbar { display: none !important; height: 0 !important; }
         .daily-overview .meal-list li { padding-left: 8px !important; white-space: nowrap !important; flex: 0 0 auto !important; }
         .daily-overview .meal-list li::before { top: 50% !important; transform: translateY(-50%) !important; }
