@@ -1,4 +1,3 @@
-
 <!doctype html>
 <!--
 진선 커피타임 · GitHub Pages용 단일 HTML
@@ -2423,156 +2422,54 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       .schedule-cell.partial-3, .schedule-cell.partial-3 * { color:#24543c !important; }
       .schedule-cell .operation-label { color:#5a431f !important; }
 
+      /* 메인: 날짜·일정·급식·달력을 시간표 위 작은 가로 카드로 배치 */
+      .workspace{display:flex;flex-direction:column;gap:10px}.daily-overview{order:0;display:grid;grid-template-columns:minmax(190px,1.15fr) minmax(170px,1fr) minmax(180px,1.1fr) minmax(210px,1.25fr);gap:8px;align-items:stretch;margin:0 0 2px}#timetable-view{order:1}.date-strip,.today-event,.meal-card,.calendar-panel{min-width:0;height:112px;min-height:112px;box-sizing:border-box}.date-strip{padding:9px 10px;border-radius:8px}.date-strip-label{font-size:10px}.date-strip-value{font-size:clamp(16px,1.7vw,21px)}.date-strip-actions{gap:3px}.date-nav-button{width:25px;height:25px;font-size:13px}.today-button{height:25px;padding:0 6px;font-size:10px}.today-event{display:flex;align-content:center;align-items:center;padding:9px 10px;border-left-width:3px;border-radius:8px;line-height:1.3}.today-event strong{font-size:10px}.today-event span{font-size:12px}.daily-content-grid{display:contents}.meal-card{perspective:900px}.meal-card-inner{min-height:112px;height:112px}.meal-face{padding:9px 10px;border-radius:8px}.meal-face-head{margin-bottom:3px}.meal-face h3{font-size:14px}.meal-face small{font-size:9px}.meal-list{gap:2px;font-size:10px;line-height:1.2}.meal-empty{font-size:10px}.meal-hint{padding-top:3px;font-size:8px}.calendar-panel{padding:7px;border-radius:8px}.calendar-head{margin-bottom:3px}.calendar-head h3{font-size:12px}.calendar-head-actions button{width:22px;height:22px}.calendar-weekdays,.calendar-grid{gap:1px}.calendar-day{min-height:11px;height:11px;padding:1px;border-radius:2px}.calendar-day.is-selected{border-width:1px;padding:1px}.calendar-day-number{font-size:8px;line-height:1}.calendar-day-event,.calendar-day-mark,.calendar-badges{display:none!important}.calendar-legend{margin-top:3px;gap:3px 6px;font-size:7px;line-height:1}.calendar-legend i{width:7px;height:7px}#friday-note{display:none!important}@media(max-width:900px){.daily-overview{grid-template-columns:repeat(4,minmax(145px,1fr));overflow-x:auto}.daily-overview>*{min-width:145px}}@media(max-width:620px){.daily-overview{grid-template-columns:repeat(4,minmax(138px,1fr))}.date-strip,.today-event,.meal-card,.calendar-panel{height:104px;min-height:104px}.meal-card-inner{height:104px;min-height:104px}}
 
-      /* 2026-09: 안내 한 줄, 달력 2칸 + 날짜·일정 1칸 + 급식 1칸 */
-      .workspace { gap: 12px; }
-      .page-heading {
-        display: flex; flex-direction: row; flex-wrap: nowrap;
-        align-items: center; justify-content: space-between;
-        gap: 14px; min-height: 42px; margin: 0;
-      }
-      .usage-guide { flex: 1 1 auto; min-width: 0; gap: 8px; font-size: 13px; line-height: 1.5; }
-      .usage-guide .mobile-break { display: none; }
-      .guide-dot { width: 25px; height: 25px; font-size: 18px; }
-      .page-heading .schedule-alert {
-        flex: 0 1 auto; margin: 0; padding: 0; border: 0;
-        background: transparent; border-radius: 0; color: #82745f;
-      }
-      .page-heading .schedule-alert p { font-size: 11px; line-height: 1.5; }
-      .page-heading .view-tabs {
-        display: flex; flex: 0 0 auto; width: auto; height: 38px;
-        gap: 2px; padding: 4px; margin: 0; white-space: nowrap;
-      }
-      .page-heading .view-tabs [role="tab"] { padding: 0 10px; min-height: 30px; font-size: 12px; }
-      .daily-overview {
-        order: 0; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
-        grid-template-areas: "calendar details meals"; gap: 12px;
-        align-items: stretch; margin: 0; overflow: visible;
-      }
-      #timetable-view { order: 1; }
-      .daily-overview > * { min-width: 0; }
-      .daily-date-stack {
-        grid-area: details; display: grid; grid-template-rows: 1fr 1fr;
-        height: 252px; min-width: 0; border: 1px solid #dfe7e1;
-        border-radius: 12px; background: white; overflow: hidden;
-      }
-      .daily-overview .date-strip {
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        gap: 8px; height: auto; min-height: 0; padding: 12px 10px;
-        border: 0; border-radius: 0; text-align: center;
-      }
-      .date-strip-main { width: 100%; }
-      .date-strip-label { font-size: 10px; color: #85908a; margin-bottom: 3px; }
-      .daily-overview .date-strip-value {
-        font-size: clamp(15px, 1.45vw, 20px); line-height: 1.45;
-        letter-spacing: -.045em; white-space: nowrap;
-      }
-      .date-strip-actions { gap: 5px; }
-      .date-nav-button { width: 28px; height: 27px; font-size: 17px; border-radius: 7px; }
-      .today-button { height: 27px; padding: 0 12px; font-size: 11px; border-radius: 7px; }
-      .daily-overview .today-event {
-        display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: center;
-        align-items: flex-start; gap: 7px; height: auto; min-height: 0;
-        padding: 13px 15px; border: 0; border-top: 1px solid #ede6d7;
-        border-radius: 0; line-height: 1.6; overflow-y: auto;
-      }
-      .today-event strong { flex-shrink: 0; font-size: 11px; }
-      .today-event span { font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
-      .daily-overview .calendar-panel {
-        grid-area: calendar; order: 0; display: grid;
-        grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 5px;
-        height: 252px; min-height: 0; padding: 12px 14px;
-        border-radius: 12px;
-      }
-      .calendar-head { margin: 0; }
-      .calendar-head h3 { font-size: 15px; }
-      .calendar-head-actions button { width: 27px; height: 27px; }
-      .calendar-weekdays { margin: 0; font-size: 10px; }
-      .calendar-weekdays, .calendar-grid { gap: 3px; }
-      .calendar-grid { grid-template-rows: repeat(6, minmax(0, 1fr)); min-height: 0; }
-      .calendar-day, .calendar-day.is-selected {
-        display: flex; align-items: center; gap: 4px; height: auto;
-        min-height: 0; padding: 3px 5px; border-width: 1px; border-radius: 4px;
-      }
-      .calendar-day.is-selected { outline: 2px solid #397967; outline-offset: -2px; }
-      .calendar-day-number { flex: 0 0 auto; font-size: 11px; line-height: 1.3; }
-      .daily-overview .calendar-day-event {
-        display: block !important; min-width: 0; margin: 0; font-size: 9px;
-        line-height: 1.3; font-weight: 400; white-space: nowrap;
-        overflow: hidden; text-overflow: ellipsis;
-      }
-      .calendar-legend { margin: 2px 0 0; gap: 4px 9px; font-size: 9px; line-height: 1.3; }
-      .calendar-legend i { width: 8px; height: 8px; }
-      .daily-overview .meal-card { grid-area: meals; height: 252px; min-height: 0; perspective: 900px; }
-      .daily-overview .meal-card-inner {
-        height: 100%; min-height: 0; transform-style: preserve-3d;
-        transition: transform 280ms cubic-bezier(.2,.7,.3,1);
-      }
-      .meal-card.is-animating .meal-card-inner { will-change: transform; }
-      .daily-overview .meal-face {
-        padding: 13px 14px 45px; border-radius: 12px;
-        backface-visibility: hidden; -webkit-backface-visibility: hidden;
-      }
-      .meal-face[aria-hidden="true"] { pointer-events: none; }
-      .meal-face-head { align-items: center; margin-bottom: 8px; flex: 0 0 auto; }
-      .meal-face h3 { font-size: 16px; }
-      .meal-face small { font-size: 10px; }
-      .meal-list {
-        display: grid; align-content: start; gap: 3px; margin: 0;
-        min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-        font-size: 12px; line-height: 1.45; scrollbar-width: thin;
-      }
-      .meal-list li { padding-left: 10px; overflow-wrap: anywhere; }
-      .meal-empty { font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
-      .meal-status { margin: 7px 0 0; flex: 0 0 auto; font-size: 10px; line-height: 1.4; opacity: .72; }
-      .meal-card { position: relative; }
-      .meal-actions {
-        position: absolute; left: 14px; right: 14px; bottom: 10px;
-        display: flex; align-items: center; justify-content: space-between; gap: 6px;
-        color: #795d38;
-      }
-      .meal-card.is-flipped .meal-actions { color: #d7e6f7; }
-      .meal-actions button { padding: 4px 3px; font-size: 11px; border-radius: 5px; }
-      .meal-actions button:hover { background: rgba(120,120,120,.1); }
-      .meal-actions button:disabled { opacity: .5; }
-      #meal-flip { margin-left: auto; font-weight: 700; }
-      .neis-admin-card { margin: 14px 0; }
-      .neis-admin-card form { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin-top: 12px; }
-      .neis-admin-card label { display: grid; gap: 5px; font-size: 12px; color: #536582; }
-      .neis-admin-card input { min-width: 0; padding: 8px 10px; border: 1px solid #d7e0ea; border-radius: 7px; background: white; font-size: 13px; }
-      .neis-admin-card .neis-key-field { flex: 1 1 230px; }
-      #neis-admin-status { min-height: 1.5em; }
-      #friday-note { display: none !important; }
-      @media (max-width: 1120px) {
-        .page-heading { flex-wrap: wrap; gap: 7px 12px; }
-        .page-heading .schedule-alert { order: 2; flex-basis: 100%; }
-        .daily-overview { gap: 9px; }
-        .daily-overview .date-strip-value { font-size: 16px; }
-      }
-      @media (max-width: 760px) {
-        .daily-overview { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "calendar calendar" "details meals"; }
-        .daily-overview .date-strip-value { font-size: 19px; }
-        .page-heading .usage-guide { flex-basis: 100%; font-size: 13px; }
-        .page-heading .schedule-alert { order: 0; }
-        .page-heading .view-tabs { flex-wrap: wrap; height: auto; max-width: 100%; }
-        .daily-overview .meal-card, .daily-date-stack { height: 252px; }
-      }
-      @media (max-width: 480px) {
-        .daily-overview .calendar-day-event { display: none !important; }
-        .calendar-day, .calendar-day.is-selected { justify-content: center; }
-        .daily-overview .date-strip-value { font-size: 15px; }
-        .daily-overview .meal-face { padding: 11px 10px 44px; }
-        .meal-actions { left: 9px; right: 9px; }
-        .meal-list { font-size: 11px; }
-        .today-event span { font-size: 12px; }
-        .daily-overview .today-event { padding: 10px; }
-      }
-      @media (max-width: 340px) {
-        .daily-overview { grid-template-columns: minmax(0, 1fr); grid-template-areas: "calendar" "details" "meals"; }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .meal-card-inner { transition: none !important; }
-        .meal-card.is-animating .meal-card-inner { will-change: auto; }
+      /* 모바일 전용 재배치: 날짜+중식 좌우 절반, 학사일정 축소, 달력은 접기/펼치기 (PC는 위 규칙 그대로 유지) */
+      @media (max-width: 700px) {
+        .daily-content-grid { display: contents !important; }
+        .daily-overview {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr !important;
+          grid-template-areas: "date meal" "event event" "cal cal" !important;
+          gap: 6px !important;
+          overflow: visible !important;
+        }
+        .daily-overview > * { min-width: 0 !important; }
+
+        .date-strip { grid-area: date !important; order: initial !important; height: auto !important; min-height: 58px !important; padding: 7px 9px !important; }
+        .date-strip-value { font-size: clamp(14px, 4.2vw, 18px) !important; }
+        .date-strip-actions { gap: 3px !important; }
+        .date-nav-button { width: 22px !important; height: 22px !important; font-size: 12px !important; }
+        .today-button { height: 22px !important; font-size: 9px !important; }
+
+        .meal-card, .meal-card-inner { grid-area: meal !important; order: initial !important; height: auto !important; min-height: 58px !important; perspective: 900px !important; }
+        .meal-face { padding: 7px 9px !important; }
+        .meal-face-head { margin-bottom: 2px !important; }
+        .meal-face h3 { font-size: 11px !important; }
+        .meal-face small { font-size: 8px !important; }
+        .meal-hint { display: none !important; }
+
+        /* 중식/석식 메뉴를 줄바꿈 없이 한 줄로 나열해 높이를 줄임 */
+        .meal-list { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; gap: 8px !important; font-size: 9.5px !important; line-height: 1.2 !important; scrollbar-width: none !important; }
+        .meal-list::-webkit-scrollbar { display: none !important; height: 0 !important; }
+        .meal-list li { padding-left: 8px !important; white-space: nowrap !important; flex: 0 0 auto !important; }
+        .meal-list li::before { top: 50% !important; transform: translateY(-50%) !important; }
+        .meal-empty { font-size: 9.5px !important; }
+
+        .today-event { grid-area: event !important; order: initial !important; height: auto !important; min-height: 0 !important; padding: 5px 9px !important; gap: 4px !important; }
+        .today-event strong { font-size: 9px !important; }
+        .today-event span { font-size: 10.5px !important; }
+
+        .calendar-panel { grid-area: cal !important; order: initial !important; height: auto !important; min-height: 0 !important; padding: 6px 8px !important; }
+        .calendar-panel .calendar-head { cursor: pointer; margin-bottom: 5px !important; }
+        .calendar-panel .calendar-head h3 { font-size: 11.5px !important; }
+        .calendar-panel .calendar-head::after { content: "▾"; margin-left: 4px; font-size: 10px; color: #8a97ab; transition: transform .18s; }
+        .calendar-panel.is-collapsed .calendar-head { margin-bottom: 0 !important; }
+        .calendar-panel.is-collapsed .calendar-head::after { transform: rotate(-90deg); }
+        .calendar-panel.is-collapsed .calendar-weekdays,
+        .calendar-panel.is-collapsed #calendar-grid,
+        .calendar-panel.is-collapsed .calendar-legend { display: none !important; }
       }
     </style>
   </head>
@@ -2607,7 +2504,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
             공통 공강이 표시됩니다.
           </span>
         </a>
-        <div class="schedule-alert" role="note" title="커피타임은 정규시간표 및 순번표 기준입니다. 압핀 등에서 시간표 변동 여부를 따로 확인해 주세요."><p>※ 정규시간표·순번표 기준 · 변동은 압핀에서 확인</p></div>
         <div class="view-tabs" role="tablist" aria-label="화면 선택">
           <button
             role="tab"
@@ -2642,41 +2538,28 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           <button role="tab" aria-selected="false" aria-controls="admin-view" id="tab-admin" data-view="admin" tabindex="-1" class="hidden">자료 관리</button>
         </div>
       </div>
+      <div class="schedule-alert" role="note">
+        <span class="alert-symbol" aria-hidden="true">!</span>
+        <p>
+          ※ 커피타임은 정규시간표 및 순번표 기준입니다.
+          <strong>압핀 등에서 시간표 변동 여부를 따로 확인해 주세요.</strong>
+        </p>
+      </div>
 
-
-
-      <section id="daily-overview" class="daily-overview" aria-label="날짜별 학사 정보와 급식">
-        <section id="calendar-panel" class="calendar-panel" aria-label="학사달력"><div class="calendar-head"><h3 id="calendar-month-label">학사달력</h3><div class="calendar-head-actions"><button id="calendar-prev" type="button" aria-label="이전 달">‹</button><button id="calendar-next" type="button" aria-label="다음 달">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-legend" aria-label="달력 색상 설명"><span><i class="exam"></i>시험</span><span><i class="evaluation"></i>학력평가·모의고사</span><span><i class="club"></i>동아리</span><span><i class="restriction"></i>체험학습 금지</span><span><i class="holiday"></i>공휴일</span></div></section>
-        <div class="daily-date-stack">
-          <div class="date-strip">
-            <div class="date-strip-actions">
-              <button id="date-prev" class="date-nav-button" type="button" aria-label="하루 전">‹</button>
-              <button id="date-today" class="today-button" type="button">오늘</button>
-              <button id="date-next" class="date-nav-button" type="button" aria-label="하루 후">›</button>
-            </div>
-            <div class="date-strip-main"><p class="date-strip-label">선택한 날짜</p><p id="selected-date-label" class="date-strip-value">날짜를 불러오는 중…</p></div>
-          </div>
-          <div id="today-event" class="today-event" role="status"></div>
+      <section id="daily-overview" class="daily-overview" aria-label="오늘 정보">
+        <div class="date-strip">
+          <div class="date-strip-main"><p class="date-strip-label">선택한 날짜</p><p id="selected-date-label" class="date-strip-value">날짜를 불러오는 중…</p></div>
+          <div class="date-strip-actions"><button id="date-prev" class="date-nav-button" type="button" aria-label="하루 전">‹</button><button id="date-today" class="today-button" type="button">오늘</button><button id="date-next" class="date-nav-button" type="button" aria-label="하루 후">›</button></div>
         </div>
-        <div id="meal-card" class="meal-card" role="group" aria-label="급식 식단">
-          <div class="meal-card-inner">
-            <section class="meal-face meal-front" aria-label="중식" aria-hidden="false">
-              <div class="meal-face-head"><h3>중식</h3><small id="meal-lunch-date"></small></div>
-              <ul id="meal-lunch-list" class="meal-list"></ul>
-              <p id="meal-lunch-empty" class="meal-empty hidden"></p>
-              <p id="meal-lunch-status" class="meal-status" role="status"></p>
-            </section>
-            <section class="meal-face meal-back" aria-label="석식" aria-hidden="true" inert>
-              <div class="meal-face-head"><h3>석식</h3><small id="meal-dinner-date"></small></div>
-              <ul id="meal-dinner-list" class="meal-list"></ul>
-              <p id="meal-dinner-empty" class="meal-empty hidden"></p>
-              <p class="meal-status">업로드한 석식 식단표 기준</p>
-            </section>
+        <div id="today-event" class="today-event" role="status"></div>
+        <div class="daily-content-grid">
+          <div id="meal-card" class="meal-card" role="button" tabindex="0" aria-label="중식과 석식 식단. 클릭하면 앞뒤가 전환됩니다.">
+            <div class="meal-card-inner">
+              <section class="meal-face meal-front" aria-label="중식"><div class="meal-face-head"><h3>중식</h3><small id="meal-lunch-date"></small></div><ul id="meal-lunch-list" class="meal-list"></ul><p id="meal-lunch-empty" class="meal-empty hidden"></p><p class="meal-hint">카드를 누르면 석식으로 전환됩니다.</p></section>
+              <section class="meal-face meal-back" aria-label="석식" aria-hidden="true"><div class="meal-face-head"><h3>석식</h3><small id="meal-dinner-date"></small></div><ul id="meal-dinner-list" class="meal-list"></ul><p id="meal-dinner-empty" class="meal-empty hidden"></p><p class="meal-hint">카드를 누르면 중식으로 돌아옵니다.</p></section>
+            </div>
           </div>
-          <div class="meal-actions">
-            <button id="meal-retry" type="button">중식 새로고침</button>
-            <button id="meal-flip" type="button" aria-label="석식 식단 보기">석식 보기 ↻</button>
-          </div>
+          <section id="calendar-panel" class="calendar-panel is-collapsed" aria-label="학사달력"><div class="calendar-head"><h3 id="calendar-month-label">학사달력</h3><div class="calendar-head-actions"><button id="calendar-prev" type="button" aria-label="이전 달">‹</button><button id="calendar-next" type="button" aria-label="다음 달">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-legend" aria-label="달력 색상 설명"><span><i class="exam"></i>시험</span><span><i class="evaluation"></i>학력평가·모의고사</span><span><i class="club"></i>동아리</span><span><i class="restriction"></i>체험학습 금지</span><span><i class="holiday"></i>공휴일</span></div></section>
         </div>
       </section>
       <div id="draft-banner" class="notice hidden" role="status">
@@ -2898,18 +2781,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         </div>
       </section>
 
-      <section id="admin-view" role="tabpanel" aria-labelledby="tab-admin" class="hidden"><div class="section-topline"><div><h2>관리자 자료 업데이트</h2><p>로그인한 관리자만 파일을 교체하거나 표시 명칭을 관리할 수 있습니다.</p></div><span class="lock-label" data-lock-label></span></div><p class="admin-upload-note">각 항목은 PDF와 JPG·JPEG·PNG를 읽습니다. 같은 종류의 자료를 올리면 해당 종류의 데이터만 교체되고, 읽지 못하면 기존 자료를 유지합니다. 파일명은 두 번 클릭하거나 연필 버튼으로 수정할 수 있으며, 되돌리기 버튼은 처음 지정한 명칭으로 복원합니다.</p><div class="section-actions"><button id="seed-extension" type="button" class="button outline">첨부 자료로 확장 데이터 초기 반영</button></div>
-        <article class="source-card neis-admin-card">
-          <h3>중식 · 나이스에서 불러오기</h3>
-          <p>선택한 달의 중식을 불러와 공용 식단으로 저장합니다. 석식은 아래의 파일 선택으로 등록하세요.</p>
-          <form id="neis-sync-form">
-            <label>불러올 달<input id="neis-sync-month" type="month" required></label>
-            <label class="neis-key-field">나이스 인증키<input id="neis-key-input" type="password" autocomplete="off" spellcheck="false" placeholder="발급받은 인증키 입력" required></label>
-            <button id="neis-sync-button" type="submit" class="button primary">중식 불러와 저장</button>
-          </form>
-          <p id="neis-admin-status" role="status"></p>
-        </article>
-<div id="source-file-grid" class="source-file-grid"></div><div class="club-data-note">동아리 담당교사표에서는 동아리–담당교사 연결만 읽고, 실제 교실은 동아리 장소표에서 읽습니다. 금요일 운영표는 날짜별 7교시 반복·5~7교시 동아리·행사 규칙으로 변환됩니다.</div></section>
+      <section id="admin-view" role="tabpanel" aria-labelledby="tab-admin" class="hidden"><div class="section-topline"><div><h2>관리자 자료 업데이트</h2><p>로그인한 관리자만 파일을 교체하거나 표시 명칭을 관리할 수 있습니다.</p></div><span class="lock-label" data-lock-label></span></div><p class="admin-upload-note">각 항목은 PDF와 JPG·JPEG·PNG를 읽습니다. 같은 종류의 자료를 올리면 해당 종류의 데이터만 교체되고, 읽지 못하면 기존 자료를 유지합니다. 파일명은 두 번 클릭하거나 연필 버튼으로 수정할 수 있으며, 되돌리기 버튼은 처음 지정한 명칭으로 복원합니다.</p><div class="section-actions"><button id="seed-extension" type="button" class="button outline">첨부 자료로 확장 데이터 초기 반영</button></div><div id="source-file-grid" class="source-file-grid"></div><div class="club-data-note">동아리 담당교사표에서는 동아리–담당교사 연결만 읽고, 실제 교실은 동아리 장소표에서 읽습니다. 금요일 운영표는 날짜별 7교시 반복·5~7교시 동아리·행사 규칙으로 변환됩니다.</div></section>
       <footer class="page-footer">
         <span id="data-summary"></span>
         <button id="help-button" class="text-button">사용·관리 안내</button>
@@ -3193,8 +3065,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         s.clubRooms = s.clubRooms || { entries: [], filename: "", updatedAt: null, revision: "" }; s.clubRooms.entries = Array.isArray(s.clubRooms.entries) ? s.clubRooms.entries : [];
         s.clubTeachers = s.clubTeachers || { entries: [], filename: "", updatedAt: null, revision: "" }; s.clubTeachers.entries = Array.isArray(s.clubTeachers.entries) ? s.clubTeachers.entries : [];
         s.calendar = s.calendar || { year: 2026, semester: 2, days: [], filename: "", updatedAt: null, revision: "" }; s.calendar.days = Array.isArray(s.calendar.days) ? s.calendar.days : [];
-        s.lunchMeals = s.lunchMeals || { days: [], updatedAt: null, revision: "" };
-        if (!Array.isArray(s.lunchMeals.days)) throw Error("중식 식단표 형식을 확인해 주세요.");
         s.dinnerMeals = s.dinnerMeals || { year: 2026, days: [], filename: "", updatedAt: null, revision: "" }; s.dinnerMeals.days = Array.isArray(s.dinnerMeals.days) ? s.dinnerMeals.days : [];
         s.restrictionPeriods = s.restrictionPeriods || { periods: [], filename: "", updatedAt: null, revision: "" }; s.restrictionPeriods.periods = Array.isArray(s.restrictionPeriods.periods) ? s.restrictionPeriods.periods : [];
         return s;
@@ -3205,7 +3075,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         if (s.clubRooms.entries.length > 500 || s.clubRooms.entries.some((e) => !e || typeof e.club !== "string" || typeof e.room !== "string")) throw Error("동아리 장소표 형식을 확인해 주세요.");
         if (s.clubTeachers.entries.length > 500 || s.clubTeachers.entries.some((e) => !e || typeof e.club !== "string" || !Array.isArray(e.teachers) || e.teachers.some((t) => typeof t !== "string"))) throw Error("동아리 담당교사표 형식을 확인해 주세요.");
         if (s.calendar.days.length > 1000 || s.calendar.days.some((e) => !e || !validDateKey(e.date) || !Array.isArray(e.events) || e.events.some((v) => typeof v !== "string"))) throw Error("학사달력 형식을 확인해 주세요.");
-        if (s.lunchMeals.days.length > 400 || s.lunchMeals.days.some((e) => !e || !validDateKey(e.date) || !Array.isArray(e.items) || e.items.length > 40 || e.items.some((v) => typeof v !== "string" || v.length > 300) || typeof e.fetchedAt !== "string" || !Number.isFinite(Date.parse(e.fetchedAt)))) throw Error("중식 식단표 형식을 확인해 주세요.");
         if (s.dinnerMeals.days.length > 1000 || s.dinnerMeals.days.some((e) => !e || !validDateKey(e.date) || !Array.isArray(e.items) || e.items.some((v) => typeof v !== "string" || v.length > 300))) throw Error("석식 식단표 형식을 확인해 주세요.");
         if (s.restrictionPeriods.periods.length > 100 || s.restrictionPeriods.periods.some((e) => !e || !validDateKey(e.start) || !validDateKey(e.end) || typeof e.label !== "string")) throw Error("체험학습 금지 기간 형식을 확인해 주세요.");
         return s;
@@ -3677,7 +3546,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           if (!auth2.currentUser) throw new Error("관리자 잠금을 먼저 해제해 주세요.");
           const keys = Object.keys(sections);
           if (
-            keys.some((key) => !["teachers", "classes", "assignments", "meetings", "fridayPlans", "clubRooms", "clubTeachers", "calendar", "lunchMeals", "dinnerMeals", "restrictionPeriods", "sourceFiles"].includes(key))
+            keys.some((key) => !["teachers", "classes", "assignments", "meetings", "fridayPlans", "clubRooms", "clubTeachers", "calendar", "dinnerMeals", "restrictionPeriods", "sourceFiles"].includes(key))
           ) {
             throw new Error("교체할 자료를 확인해 주세요.");
           }
@@ -3755,31 +3624,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           isAdministrator,
           replaceSections,
           updateSourceLabel,
-
-          async saveLunchMeals(lunchMeals, expectedVersion) {
-            if (!auth2.currentUser) throw new Error("관리자 잠금을 먼저 해제해 주세요.");
-            return runTransaction(db, async (transaction) => {
-              const snapshot = await transaction.get(current);
-              if (!snapshot.exists()) throw new Error("공용 DB를 먼저 등록해 주세요.");
-              const raw = snapshot.data(), previous = decodeRecord(raw);
-              if (previous.version !== expectedVersion) {
-                const error = new Error("다른 관리자가 자료를 수정했습니다. 최신 자료를 불러온 뒤 다시 저장해 주세요.");
-                error.status = 409;
-                throw error;
-              }
-              const next = structuredClone(previous.state);
-              next.lunchMeals = structuredClone(lunchMeals);
-              const version = previous.version + 1;
-              const update = {
-                version, payload: encodeState(next),
-                updatedAt: serverTimestamp(), updatedBy: auth2.currentUser.uid
-              };
-              // 구형 문서에도 기존 보안 규칙 그대로 저장할 수 있도록 새 최상위 필드를 추가하지 않습니다.
-              if (Array.isArray(raw.changedSections)) update.changedSections = ["lunchMeals"];
-              transaction.update(current, update);
-              return { ...previous, version, state: next, changedSections: ["lunchMeals"] };
-            });
-          },
           applyNameReplacements: (version) => replaceSections({}, version),
           initialize,
           async read() {
@@ -4140,8 +3984,8 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         "2026-10-03": "개천절", "2026-10-05": "개천절 대체공휴일", "2026-10-09": "한글날", "2026-12-25": "성탄절",
         "2027-01-01": "신정", "2027-02-06": "설날 연휴", "2027-02-07": "설날", "2027-02-08": "설날 연휴", "2027-02-09": "설날 대체공휴일",
       });
-      var NEIS_API_URL = "https://open.neis.go.kr/hub/mealServiceDietInfo";
-      // 일자별 조회는 키 없이도 요청합니다. 관리자 동기화 키는 현재 탭에서만 사용합니다.
+      var NEIS_PROXY_URL = "https://asia-northeast3-jscoffee.cloudfunctions.net/neisMeals";
+      // 인증키는 Firebase Functions Secret(NEIS_KEY)에만 저장합니다.
       var NEIS_KEY = "";
       var NEIS_SCHOOL = { office: "B10", school: "7010245", lunchMealCode: "2" };
       var SOURCE_DEFS = [
@@ -4165,7 +4009,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         "clubRooms",
         "clubTeachers",
         "calendar",
-        "lunchMeals",
         "dinnerMeals",
         "restrictionPeriods",
         "sourceFiles",
@@ -4188,8 +4031,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       var mealRequestId = 0;
       var mealAbortController = null;
       var mealRequestedDate = null;
-      var mealDataRevision = "";
-      var mealFlipTimer;
       var sourceLabelFastPath = true;
       var sourceLabelRevision = "";
       var tesseract = null;
@@ -4237,7 +4078,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           renderFields: selectionDataChanged || sections.has("assignments"),
           renderMeetingsView: sections.has("assignments") || sections.has("meetings"),
           renderAdminView: sections.has("sourceFiles"),
-          renderMealsView: sections.has("lunchMeals") || sections.has("dinnerMeals"),
+          renderMealsView: sections.has("dinnerMeals"),
         };
       }
       var toastTimer;
@@ -4599,28 +4440,19 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           const date=new Date(start); date.setDate(start.getDate()+i);
           const key=dateToKey(date),record=days.find((day)=>day.date===key),text=record?.text||"",tags=record?.tags||calendarTags(text),restriction=periods.find((period)=>isDateInPeriod(key,period));
           const classes=["calendar-day",date.getMonth()===month?"":"is-out",key===selectedDate?"is-selected":"",key===today?"is-today":"",date.getDay()===0?"is-sunday":"",date.getDay()===6?"is-saturday":"",PUBLIC_HOLIDAYS[key]?"is-holiday":"",restriction?"is-restricted":"",...tags].filter(Boolean).join(" ");
-          const eventLabel = PUBLIC_HOLIDAYS[key] || text || restriction?.label || "";
-          const details = [...new Set([PUBLIC_HOLIDAYS[key], text, restriction?.label].filter(Boolean))].join(" · ");
-          const description = formatDateKey(key) + (details ? " · " + details : "");
-          cells.push('<button type="button" class="' + classes + '" data-calendar-date="' + key + '" aria-pressed="' + String(key === selectedDate) + '" aria-label="' + esc(description) + '" title="' + esc(description) + '"><span class="calendar-day-number">' + date.getDate() + '</span>' + (eventLabel ? '<span class="calendar-day-event" aria-hidden="true">' + esc(eventLabel) + '</span>' : '') + '</button>');
+          cells.push(`<button type="button" class="${classes}" data-calendar-date="${key}" aria-label="${formatDateKey(key)}${PUBLIC_HOLIDAYS[key]?` ${esc(PUBLIC_HOLIDAYS[key])}`:""}${text?` ${esc(text)}`:""}"><span class="calendar-day-number">${date.getDate()}</span></button>`);
         }
         $("#calendar-grid").innerHTML=cells.join("");
       }
       function pickTodayEvent(key) { const record=calendarDayRecord(key), plan=state?planForDate(key,state):null, events=Array.isArray(record?.events)?record.events:[]; if(PUBLIC_HOLIDAYS[key]&&!events.length)return PUBLIC_HOLIDAYS[key]; if(plan?.type==="club")return "동아리"; if(plan?.type==="repeat")return plan.label||"금요일 반복 수업"; for(const pattern of [/중간고사|기말고사/,/전국연합학력평가|학력평가|모평|모의/,/개학식|방학식|종업식|졸업식|휴업/,/동아리|연화제/,/교직원|교사/]){const found=events.find((event)=>pattern.test(event));if(found)return found;} return events[0]||(plan?.label||"등록된 학사 일정이 없습니다."); }
       function renderDateInfo(){const dateLabel=$("#selected-date-label"),eventBox=$("#today-event");if(dateLabel)dateLabel.textContent=formatDateKey(selectedDate);const isToday=selectedDate===localDateKey(),event=state?pickTodayEvent(selectedDate):"공용 시간표 연결 후 학사 일정을 표시합니다.";if(eventBox)eventBox.innerHTML=`<strong>${isToday?"오늘의 일정":"선택한 날짜 일정"}</strong><span>${esc(event)}</span>`;}
-
       function renderMealsForSelectedDate({ reloadMeals = false } = {}) {
-        const label = selectedDate.slice(5).replace("-", ".");
-        $("#meal-lunch-date").textContent = label;
-        $("#meal-dinner-date").textContent = label;
-        // 석식은 업로드 자료만 읽습니다. 나이스의 요청·오류 상태를 사용하지 않습니다.
-        renderMealList("#meal-dinner-list", "#meal-dinner-empty",
-          dinnerMealsForDate(selectedDate), dinnerEmptyMessage());
-        const revision = state?.lunchMeals?.revision || "";
-        if (reloadMeals || mealRequestedDate !== selectedDate || mealDataRevision !== revision) {
+        if (state && (reloadMeals || mealRequestedDate !== selectedDate)) {
           mealRequestedDate = selectedDate;
-          mealDataRevision = revision;
           loadMeals(selectedDate);
+        } else if (!state) {
+          renderMealList("#meal-lunch-list", "#meal-lunch-empty", [], "공용 시간표 연결 후 급식을 표시합니다.");
+          renderMealList("#meal-dinner-list", "#meal-dinner-empty", [], "공용 시간표 연결 후 급식을 표시합니다.");
         }
       }
       function renderDailyOverview({ reloadMeals = false } = {}) {
@@ -4633,231 +4465,47 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         if (!validDateKey(key)) return;
         selectedDate = key;
         calendarMonth = key.slice(0, 7);
-        // 석식을 보고 있었다면 날짜를 바꿔도 석식 면을 유지합니다.
+        $("#meal-card")?.classList.remove("is-flipped");
         renderDailyOverview({ reloadMeals: true });
       }
-      function renderMealList(listId, emptyId, items, message) {
-        const list = $(listId), empty = $(emptyId);
-        list.innerHTML = items?.length ? items.map((item) => "<li>" + esc(item) + "</li>").join("") : "";
-        empty.textContent = message || "";
-        empty.classList.toggle("hidden", !!items?.length);
-      }
-      function cleanMealText(value) {
-        return String(value || "").replace(/<br\s*\/?>/gi, "\n").split(/\n+/)
-          .map((line) => line
-            .replace(/<[^>]*>/g, "")
-            .replace(/\((?:[1-9]|1[0-9])(?:\.(?:[1-9]|1[0-9]))*\.?\)/g, "")
-            .replace(/\s*(?:[1-9]|1[0-9])(?:\.(?:[1-9]|1[0-9]))+\.?\s*$/g, "")
-            .replace(/([가-힣])\s*(?:1[0-9]|[1-9])\.?\s*$/g, "$1")
-            .replace(/\s{2,}/g, " ").trim())
-          .filter(Boolean);
-      }
-      function dinnerMealsForDate(key) {
-        const day = state?.dinnerMeals?.days?.find((item) => item.date === key);
-        return Array.isArray(day?.items) ? day.items.flatMap(cleanMealText) : [];
-      }
-      function dinnerEmptyMessage() {
-        if (!state) return "공용 자료 연결 후 석식을 표시합니다.";
-        return state.dinnerMeals?.filename ? "등록된 석식이 없습니다." : "관리자 탭에서 석식 식단표를 업로드해 주세요.";
-      }
-      function readNeisKey() {
-        const typed = $("#neis-key-input")?.value.trim();
-        if (typed) return typed;
-        try { return sessionStorage.getItem("jscoffee.neis.key") || NEIS_KEY; }
-        catch { return NEIS_KEY; }
-      }
-      function parseNeisLunchPayload(payload, from, to) {
-        const blocks = payload?.mealServiceDietInfo;
-        const heads = Array.isArray(blocks) ? blocks.flatMap((part) => part.head || []) : [];
-        const result = payload?.RESULT || heads.find((head) => head.RESULT)?.RESULT;
-        const code = String(result?.CODE || "");
-        if (code === "INFO-200") return [];
-        if (code && code !== "INFO-000") throw Error("NEIS-" + code + ": " + (result.MESSAGE || "급식 응답 오류"));
-        if (!Array.isArray(blocks)) throw Error("나이스 급식 응답 형식을 확인할 수 없습니다.");
-        if (!blocks.some((part) => Array.isArray(part.row))) throw Error("나이스 식단 목록을 확인할 수 없습니다.");
-        const rows = blocks.flatMap((part) => Array.isArray(part.row) ? part.row : []);
-        const total = Number(heads.find((head) => "list_total_count" in head)?.list_total_count || 0);
-        if (total > rows.length) throw Error("식단 일부만 수신했습니다. 인증키를 확인하고 다시 불러와 주세요.");
-        return rows.filter((row) => {
-          const date = String(row.MLSV_YMD || "");
-          if (String(row.MMEAL_SC_CODE) !== NEIS_SCHOOL.lunchMealCode) return false;
-          if (String(row.ATPT_OFCDC_SC_CODE) !== NEIS_SCHOOL.office ||
-              String(row.SD_SCHUL_CODE) !== NEIS_SCHOOL.school ||
-              !/^\d{8}$/.test(date) || date < from || date > to) {
-            throw Error("요청한 학교 또는 날짜와 다른 급식 응답을 받았습니다.");
-          }
-          if (typeof row.DDISH_NM !== "string") throw Error("나이스 식단 내용이 올바르지 않습니다.");
-          return true;
-        });
-      }
-      async function fetchNeisLunch(from, to, { signal, apiKey = readNeisKey() } = {}) {
-        const endpoint = new URL(NEIS_API_URL);
-        const params = {
-          Type: "json", pIndex: "1", pSize: "100",
-          ATPT_OFCDC_SC_CODE: NEIS_SCHOOL.office,
-          SD_SCHUL_CODE: NEIS_SCHOOL.school,
-          MMEAL_SC_CODE: NEIS_SCHOOL.lunchMealCode
-        };
-        if (apiKey) params.KEY = apiKey;
-        if (from === to) params.MLSV_YMD = from;
-        else { params.MLSV_FROM_YMD = from; params.MLSV_TO_YMD = to; }
-        for (const [name, value] of Object.entries(params)) endpoint.searchParams.set(name, value);
-        const controller = new AbortController();
-        let timedOut = false;
-        const cancel = () => controller.abort();
-        if (signal?.aborted) controller.abort();
-        else signal?.addEventListener("abort", cancel, { once: true });
-        const timer = setTimeout(() => { timedOut = true; controller.abort(); }, 12000);
-        try {
-          const response = await fetch(endpoint.toString(), {
-            method: "GET", mode: "cors", credentials: "omit", signal: controller.signal
-          });
-          if (!response.ok) throw Error("나이스 응답 오류(" + response.status + ")");
-          return parseNeisLunchPayload(await response.json(), from, to);
-        } catch (error) {
-          if (timedOut) throw Error("나이스 응답 시간이 초과되었습니다. 잠시 후 다시 불러와 주세요.");
-          throw error;
-        } finally {
-          clearTimeout(timer);
-          signal?.removeEventListener("abort", cancel);
-        }
-      }
-      function lunchErrorMessage(error) {
-        const message = String(error?.message || "");
-        if (message.includes("NEIS-ERROR-290")) return "나이스 인증키를 확인해 주세요.";
-        if (message.includes("NEIS-ERROR-300")) return "나이스 요청의 학교·날짜 정보를 확인해 주세요.";
-        if (error instanceof TypeError) return "중식에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 불러와 주세요.";
-        return message || "중식 정보를 불러오지 못했습니다.";
-      }
-      function rememberLunch(key, items, fetchedAt = new Date().toISOString()) {
-        const entry = { date: key, items, fetchedAt };
-        mealCache.delete(key);
-        mealCache.set(key, entry);
-        while (mealCache.size > 90) mealCache.delete(mealCache.keys().next().value);
-        return entry;
-      }
-      function savedLunchForDate(key) {
-        const shared = state?.lunchMeals?.days?.find((day) => day.date === key);
-        const memory = mealCache.get(key);
-        return [shared, memory].filter(Boolean)
-          .sort((a, b) => (Date.parse(b.fetchedAt) || 0) - (Date.parse(a.fetchedAt) || 0))[0] || null;
-      }
-      async function loadMeals(key, { force = false } = {}) {
-        const request = ++mealRequestId;
-        mealAbortController?.abort();
-        mealAbortController = null;
-        const status = $("#meal-lunch-status"), retry = $("#meal-retry");
-        const fallback = savedLunchForDate(key);
-        const age = fallback ? Date.now() - Date.parse(fallback.fetchedAt) : Infinity;
-        const ttl = fallback?.items.length ? 12 * 60 * 60 * 1000 : 10 * 60 * 1000;
-        retry.disabled = false;
-        if (!force && fallback && age >= 0 && age < ttl) {
-          renderMealList("#meal-lunch-list", "#meal-lunch-empty", fallback.items, "등록된 중식이 없습니다.");
-          status.textContent = "나이스 · 저장된 식단";
-          return;
-        }
-        renderMealList("#meal-lunch-list", "#meal-lunch-empty", fallback?.items || [],
-          fallback ? "등록된 중식이 없습니다." : "중식을 불러오는 중입니다.");
-        status.textContent = fallback ? "저장된 식단 · 새 정보 확인 중" : "";
-        retry.disabled = true;
-        const controller = new AbortController();
-        mealAbortController = controller;
-        try {
-          const compact = key.replace(/-/g, "");
-          const rows = await fetchNeisLunch(compact, compact, { signal: controller.signal });
-          if (request !== mealRequestId || key !== selectedDate) return;
-          const items = rows.flatMap((row) => cleanMealText(row.DDISH_NM));
-          rememberLunch(key, items);
-          renderMealList("#meal-lunch-list", "#meal-lunch-empty", items, "등록된 중식이 없습니다.");
-          status.textContent = "나이스 · 방금 확인";
-        } catch (error) {
-          if (request !== mealRequestId || key !== selectedDate || error?.name === "AbortError") return;
-          renderMealList("#meal-lunch-list", "#meal-lunch-empty", fallback?.items || [], lunchErrorMessage(error));
-          status.textContent = fallback?.items.length ? "저장된 식단 표시 중 · 새 정보 확인 실패" : "";
-        } finally {
-          if (mealAbortController === controller) mealAbortController = null;
-          if (request === mealRequestId) retry.disabled = false;
-        }
-      }
-      function setMealFace(showDinner) {
-        const card = $("#meal-card");
-        clearTimeout(mealFlipTimer);
-        card.classList.toggle("is-flipped", showDinner);
-        for (const [selector, hidden] of [[".meal-front", showDinner], [".meal-back", !showDinner]]) {
-          const face = card.querySelector(selector);
-          face.setAttribute("aria-hidden", String(hidden));
-          face.inert = hidden;
-        }
-        $("#meal-retry").hidden = showDinner;
-        $("#meal-flip").textContent = showDinner ? "중식 보기 ↻" : "석식 보기 ↻";
-        $("#meal-flip").setAttribute("aria-label", showDinner ? "중식 식단 보기" : "석식 식단 보기");
-        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          card.classList.add("is-animating");
-          mealFlipTimer = setTimeout(() => card.classList.remove("is-animating"), 360);
-        } else card.classList.remove("is-animating");
-      }
-      function prepareNeisAdmin() {
-        const month = $("#neis-sync-month"), input = $("#neis-key-input");
-        if (!month.value) month.value = selectedDate.slice(0, 7);
-        if (!input.value) {
-          try { input.value = sessionStorage.getItem("jscoffee.neis.key") || ""; } catch {}
-        }
-      }
-      async function syncNeisLunch(event) {
-        event.preventDefault();
-        if (!requireAdmin() || !state || busy) return;
-        if (dirty || saving) { toast("편집 중인 자료를 먼저 저장해 주세요.", "info"); return; }
-        const month = $("#neis-sync-month").value;
-        const apiKey = $("#neis-key-input").value.trim();
-        const status = $("#neis-admin-status"), button = $("#neis-sync-button");
-        if (!/^20\d{2}-(0[1-9]|1[0-2])$/.test(month) || !apiKey) {
-          status.textContent = "불러올 달과 나이스 인증키를 입력해 주세요.";
-          return;
-        }
-        // 키는 현재 탭에서만 보관하고 Firestore나 저장소 코드에 기록하지 않습니다.
-        try { sessionStorage.setItem("jscoffee.neis.key", apiKey); } catch {}
-        const expectedVersion = serverVersion;
-        const last = new Date(Number(month.slice(0, 4)), Number(month.slice(5)), 0).getDate();
-        busy = true;
-        button.disabled = true;
-        status.textContent = month.replace("-", "년 ") + "월 중식을 불러오는 중입니다.";
-        try {
-          const rows = await fetchNeisLunch(month.replace("-", "") + "01", month.replace("-", "") + last, { apiKey });
-          const fetchedAt = new Date().toISOString(), byDate = new Map();
-          for (let day = 1; day <= last; day++) {
-            const date = month + "-" + String(day).padStart(2, "0");
-            byDate.set(date, { date, items: [], fetchedAt });
-          }
-          for (const row of rows) {
-            const raw = String(row.MLSV_YMD);
-            const key = raw.slice(0, 4) + "-" + raw.slice(4, 6) + "-" + raw.slice(6, 8);
-            byDate.get(key).items.push(...cleanMealText(row.DDISH_NM));
-          }
-          const days = [...(state.lunchMeals?.days || []).filter((day) => !day.date.startsWith(month + "-")), ...byDate.values()]
-            .sort((a, b) => a.date.localeCompare(b.date)).slice(-400);
-          const section = { days, updatedAt: fetchedAt, revision: crypto.randomUUID() };
-          const result = await cloud.saveLunchMeals(section, expectedVersion);
-          for (const day of byDate.values()) rememberLunch(day.date, day.items, fetchedAt);
-          adopt(result, renderOptionsForSections(["lunchMeals"]));
-          status.textContent = month.replace("-", "년 ") + "월 중식 저장 완료 · " +
-            [...byDate.values()].filter((day) => day.items.length).length + "일분";
-          toast("중식을 공용 식단으로 저장했습니다.", "success");
-        } catch (error) {
-          // 실패 응답은 공용 식단을 덮어쓰지 않습니다.
-          status.textContent = lunchErrorMessage(error);
-          toast("중식 저장 실패: " + lunchErrorMessage(error), "error", 6000);
-        } finally {
-          busy = false;
-          button.disabled = false;
-          drainRecord();
-          renderLock();
-        }
+      function renderMealList(listId,emptyId,items,message){const list=$(listId),empty=$(emptyId);list.innerHTML=items?.length?items.map((item)=>`<li>${esc(item)}</li>`).join(""):"";empty.textContent=message;empty.classList.toggle("hidden",!!items?.length);}
+      function cleanMealText(value){return String(value||"").replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map((line)=>line.replace(/\s*\(?\d+(?:\.\d+)*\.?\)?\s*/g," ").replace(/\s{2,}/g," ").trim()).filter(Boolean);}
+      function dinnerMealsForDate(key){const day=state?.dinnerMeals?.days?.find((item)=>item.date===key);return Array.isArray(day?.items)?day.items.flatMap((item)=>cleanMealText(item)):[];}
+      function dinnerEmptyMessage(){return state?.dinnerMeals?.filename?"등록된 석식이 없습니다.":"관리자 탭에서 석식 식단표를 업로드해 주세요.";}
+      async function loadMeals(key){
+        const request=++mealRequestId;
+        if(mealAbortController){mealAbortController.abort();mealAbortController=null;}
+        $("#meal-lunch-date").textContent=key.slice(5).replace("-", ".");
+        $("#meal-dinner-date").textContent=key.slice(5).replace("-", ".");
+        renderMealList("#meal-dinner-list","#meal-dinner-empty",dinnerMealsForDate(key),dinnerEmptyMessage());
+        const cached=mealCache.get(key);
+        if(cached){renderMealList("#meal-lunch-list","#meal-lunch-empty",cached.lunch,"등록된 중식이 없습니다.");return;}
+        renderMealList("#meal-lunch-list","#meal-lunch-empty",[],"중식 식단을 불러오는 중입니다.");
+        if(!NEIS_PROXY_URL){renderMealList("#meal-lunch-list","#meal-lunch-empty",[],"NEIS 중식 프록시 주소가 설정되지 않았습니다.");return;}
+        const controller=new AbortController();mealAbortController=controller;
+        try{
+          const endpoint=new URL(NEIS_PROXY_URL,window.location.href);endpoint.searchParams.set("date",key.replace(/-/g,""));
+          const response=await fetch(endpoint,{headers:{Accept:"application/json"},signal:controller.signal});
+          if(!response.ok)throw Error(`중식 프록시 오류(${response.status})`);
+          const payload=await response.json();
+          if(request!==mealRequestId)return;
+          const resultInfo=payload?.mealServiceDietInfo?.[0]?.head?.[1]?.RESULT||payload?.mealServiceDietInfo?.[0]?.head?.[0]?.RESULT||payload?.RESULT;
+          const resultCode=String(resultInfo?.CODE||"");
+          if(resultCode&&resultCode!=="INFO-000")throw Error(`NEIS-${resultCode}:${resultInfo?.MESSAGE||"급식 API 응답 오류"}`);
+          const result={lunch:[]};
+          for(const row of payload?.mealServiceDietInfo?.[1]?.row||[]){if(String(row.MMEAL_SC_CODE)!==NEIS_SCHOOL.lunchMealCode)continue;result.lunch.push(...cleanMealText(row.DDISH_NM));}
+          mealCache.set(key,result);
+          renderMealList("#meal-lunch-list","#meal-lunch-empty",result.lunch,"등록된 중식이 없습니다.");
+        }catch(error){
+          if(request!==mealRequestId||error?.name==="AbortError")return;
+          const raw=String(error?.message||""),message=raw.includes("NEIS-ERROR-290")?"NEIS 인증키가 유효하지 않습니다.":raw.includes("NEIS-ERROR-300")?"NEIS 요청 필수값이 누락되었습니다.":raw.includes("NEIS-INFO-200")?"선택한 날짜의 중식 정보가 없습니다.":raw.includes("중식 프록시 오류(404)")?"중식 프록시 함수가 아직 배포되지 않았습니다.":error instanceof TypeError?"중식 프록시 연결이 차단되었습니다. Firebase Functions 배포와 CORS 설정을 확인해 주세요.":raw||"중식 정보를 불러오지 못했습니다.";
+          renderMealList("#meal-lunch-list","#meal-lunch-empty",[],message);
+        }finally{if(mealAbortController===controller)mealAbortController=null;}
       }
       async function seedExtensionData(){if(!requireAdmin()||!state||busy)return;if(!window.confirm("첨부된 확장 자료를 한 번에 공용 DB에 반영할까요? 기존 교사·학반·직책·회의 자료는 유지됩니다."))return;busy=true;try{const sections={fridayPlans:structuredClone(INITIAL_DATA.fridayPlans),clubRooms:structuredClone(INITIAL_DATA.clubRooms),clubTeachers:structuredClone(INITIAL_DATA.clubTeachers),calendar:structuredClone(INITIAL_DATA.calendar),dinnerMeals:structuredClone(INITIAL_DATA.dinnerMeals),restrictionPeriods:structuredClone(INITIAL_DATA.restrictionPeriods),sourceFiles:structuredClone(INITIAL_DATA.sourceFiles)};adopt(await cloud.replaceSections(sections,serverVersion));toast("첨부 자료의 확장 데이터를 공용 DB에 반영했습니다.","success",5000);}catch(error){toast(errorText(error),"error",6000);}finally{busy=false;drainRecord();renderLock();}}
       async function seedOneExtensionData(key){if(!requireAdmin()||!state||busy)return;const sourceKey=key==="restrictions"?"restrictionPeriods":key;if(!INITIAL_DATA[sourceKey])return;busy=true;try{const result=await cloud.replaceSections({[sourceKey]:structuredClone(INITIAL_DATA[sourceKey])},serverVersion);adopt(result,renderOptionsForSections([sourceKey]));toast(`${SOURCE_DEF_MAP[key]?.title||"자료"} 초기 자료를 반영했습니다.`,"success",3500);}catch(error){toast(errorText(error),"error",6000);}finally{busy=false;drainRecord();renderLock();}}
       function renderAdmin(){
         if(!state||!unlocked||!$("#source-file-grid"))return;
-        prepareNeisAdmin();
         $("#source-file-grid").innerHTML=SOURCE_DEFS.map((def)=>{
           const source=state.sourceFiles?.[def.key]||{initialName:def.initialName,displayName:def.initialName,uploadedName:state[def.field]?.filename||""};
           const updated=source.updatedAt?new Date(source.updatedAt).toLocaleString("ko-KR",{dateStyle:"short",timeStyle:"short"}):"초기 등록 자료";
@@ -5030,7 +4678,6 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         $("#assignment-upload").classList.add("hidden");
         $("#tab-admin").classList.toggle("hidden", !unlocked);
         if ($("#seed-extension")) $("#seed-extension").disabled = !unlocked || busy;
-        if ($("#neis-sync-button")) $("#neis-sync-button").disabled = !unlocked || busy;
         $$("[data-admin-field]").forEach((el) => (el.disabled = !unlocked || busy));
         $$("[data-lock-label]").forEach((el) => {
           el.innerHTML =
@@ -5706,20 +5353,9 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       $("#date-next").addEventListener("click",()=>{const date=dateKeyToDate(selectedDate);date.setDate(date.getDate()+1);setSelectedDate(dateToKey(date));});
       $("#date-today").addEventListener("click",()=>setSelectedDate(localDateKey()));
       $("#calendar-prev").addEventListener("click",()=>calendarMonthShift(-1)); $("#calendar-next").addEventListener("click",()=>calendarMonthShift(1));
+      $("#calendar-panel").querySelector(".calendar-head").addEventListener("click",(event)=>{if(event.target.closest("button"))return;$("#calendar-panel").classList.toggle("is-collapsed");});
       $("#calendar-grid").addEventListener("click",(event)=>{const button=event.target.closest("[data-calendar-date]");if(button)setSelectedDate(button.dataset.calendarDate);});
-      $("#meal-flip").addEventListener("click", () => setMealFace(!$("#meal-card").classList.contains("is-flipped")));
-      $("#meal-card").addEventListener("click", (event) => {
-        if (event.target.closest("button, a, input, select, textarea") || window.getSelection()?.toString()) return;
-        setMealFace(!$("#meal-card").classList.contains("is-flipped"));
-      });
-      $("#meal-card .meal-card-inner").addEventListener("transitionend", (event) => {
-        if (event.propertyName === "transform") {
-          clearTimeout(mealFlipTimer);
-          $("#meal-card").classList.remove("is-animating");
-        }
-      });
-      $("#meal-retry").addEventListener("click", () => loadMeals(selectedDate, { force: true }));
-      $("#neis-sync-form").addEventListener("submit", syncNeisLunch);
+      $("#meal-card").addEventListener("click",()=>$("#meal-card").classList.toggle("is-flipped")); $("#meal-card").addEventListener("keydown",(event)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();$("#meal-card").classList.toggle("is-flipped");}});
       $("#seed-extension").addEventListener("click",seedExtensionData);
       $("#source-file-grid").addEventListener("click",(event)=>{const upload=event.target.closest("[data-source-upload]"),edit=event.target.closest("[data-edit-source]"),reset=event.target.closest("[data-reset-source]");if(upload)$("#source-input-"+upload.dataset.sourceUpload)?.click();else if(edit)renameSourceFile(edit.dataset.editSource);else if(reset)renameSourceFile(reset.dataset.resetSource,true);});
       $("#source-file-grid").addEventListener("dblclick",(event)=>{const name=event.target.closest("[data-source-name]");if(name)renameSourceFile(name.dataset.sourceName);});
