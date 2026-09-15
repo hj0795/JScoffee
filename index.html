@@ -4557,7 +4557,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         await saveAssignments();
         const sections = {};
         const files = structuredClone(state.sourceFiles || defaultSourceFiles());
-        const now = new Date().toISOString();
+        const now = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString();
         for (const [kind, file, data] of entries) {
           sections[kind] = { ...data, filename: file.name, updatedAt: now, revision: crypto.randomUUID() };
           const def = SOURCE_DEFS.find((item) => item.field === kind || item.key === kind);
@@ -4609,7 +4609,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
       function cleanCalendarSourceText(value){return String(value||"").replace(/&lt;|&gt;|&amp;|&nbsp;|&#\d+;/gi,(token)=>({"&lt;":"<","&gt;":">","&amp;":"&","&nbsp;":" "}[token.toLowerCase()]||" ")).replace(/<[^>]*>/g," ").replace(/[|¦]/g," ").replace(/\s+/g," ").trim();}
       function chooseCalendarEvent(values){const items=[...new Set(values.map(cleanCalendarSourceText).map((value)=>value.replace(/^\d{1,2}\s*[일.]?\s*/,"").trim()).filter((value)=>value&&!/^[-–—]+$/.test(value)))];if(!items.length)return"";const priority=[/중간고사|기말고사/,/전국연합학력평가|학력평가|모의|모평/,/개학식|방학식|종업식|졸업식|휴업/,/동아리|연화제/,/교직원|교사/];for(const pattern of priority){const found=items.find((value)=>pattern.test(value));if(found)return found.slice(0,100);}return items[0].slice(0,100);}
       function parseCalendarText(text,pages=[]){const days=new Map();let year=2026,month=3;const monthNames={january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12};const add=(y,m,d,value)=>{if(d<1||d>31||m<1||m>12||!value)return;const date=`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`,current=days.get(date)||{date,events:[],text:"",tags:[]};if(!current.events.includes(value))current.events.push(value);const representative=chooseCalendarEvent(current.events);current.events=representative?[representative]:current.events.slice(0,1);current.text=representative||"";current.tags=calendarTags(current.text);days.set(date,current);};for(const rawLine of String(text||"").split(/\r?\n/)){const line=cleanCalendarSourceText(rawLine);if(!line)continue;const isMonthHeading=/^(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d{2}$/i.test(line)||/^20\d{2}\s+\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)$/i.test(line);const ymKorean=line.match(/(20\d{2})\s*년?\s*(\d{1,2})\s*월/); const ymEnglishBefore=line.match(/(20\d{2})\s+(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)/i); const ymEnglishAfter=line.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})/i); if(ymKorean){year=+ymKorean[1];month=+ymKorean[2];}else if(ymEnglishBefore){year=+ymEnglishBefore[1];month=monthNames[ymEnglishBefore[3].toLowerCase()]||+ymEnglishBefore[2];}else if(ymEnglishAfter){year=+ymEnglishAfter[3];month=monthNames[ymEnglishAfter[2].toLowerCase()]||+ymEnglishAfter[1];}else{const plainMonth=line.match(/(?:^|\s)(\d{1,2})\s*월(?:\s|$)/);if(plainMonth)month=+plainMonth[1];} if(isMonthHeading) continue;
-          for(const match of line.matchAll(/(?:^|\s|>)(\d{1,2})\s*(?:일|[.)])?\s*([^\d]*?)(?=(?:\s+\d{1,2}\s*(?:일|[.)])?\s)|$)/g))add(year,month,+match[1],cleanCalendarSourceText(match[2]));}if(!days.size&&pages?.length)for(const page of pages)for(const row of linesOf(page.items,Math.max(4,page.height/180))){const line=cleanCalendarSourceText(row.text),ym=line.match(/(20\d{2})\s*년?\s*(\d{1,2})\s*월/)||line.match(/(\d{1,2})\s*월/);if(ym){if(ym[2]){year=+ym[1];month=+ym[2];}else month=+ym[1];}const day=line.match(/(?:^|\s)(\d{1,2})(?:\s|$)/);if(day)add(year,month,+day[1],line.slice((day.index||0)+day[0].length));}if(!days.size)throw Error("학사달력에서 날짜별 일정을 읽지 못했습니다. 그림형 PDF라면 OCR 결과를 확인해 주세요.");return{year,semester:2,days:[...days.values()].sort((a,b)=>a.date.localeCompare(b.date)),ocrParsedAt:new Date().toISOString()};}
+          for(const match of line.matchAll(/(?:^|\s|>)(\d{1,2})\s*(?:일|[.)])?\s*([^\d]*?)(?=(?:\s+\d{1,2}\s*(?:일|[.)])?\s)|$)/g))add(year,month,+match[1],cleanCalendarSourceText(match[2]));}if(!days.size&&pages?.length)for(const page of pages)for(const row of linesOf(page.items,Math.max(4,page.height/180))){const line=cleanCalendarSourceText(row.text),ym=line.match(/(20\d{2})\s*년?\s*(\d{1,2})\s*월/)||line.match(/(\d{1,2})\s*월/);if(ym){if(ym[2]){year=+ym[1];month=+ym[2];}else month=+ym[1];}const day=line.match(/(?:^|\s)(\d{1,2})(?:\s|$)/);if(day)add(year,month,+day[1],line.slice((day.index||0)+day[0].length));}if(!days.size)throw Error("학사달력에서 날짜별 일정을 읽지 못했습니다. 그림형 PDF라면 OCR 결과를 확인해 주세요.");return{year,semester:2,days:[...days.values()].sort((a,b)=>a.date.localeCompare(b.date)),ocrParsedAt:new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString()};}
       function parseRestrictionText(text) { const periods=[]; const normalized=text.replace(/[〜～]/g,"~").replace(/\s+/g," "); for (const match of normalized.matchAll(/(\d{1,2})\s*\/\s*(\d{1,2})[^~\n]{0,12}~\s*(\d{1,2})\s*\/\s*(\d{1,2})/g)) { const start=`2026-${String(+match[1]).padStart(2,"0")}-${String(+match[2]).padStart(2,"0")}`,endYear=+match[3]<+match[1]?2027:2026,end=`${endYear}-${String(+match[3]).padStart(2,"0")}-${String(+match[4]).padStart(2,"0")}`; periods.push({start,end,label:"체험학습 금지 기간"}); } if(!periods.length) throw Error("체험학습 금지 기간 이미지에서 기간을 읽지 못했습니다."); return {periods}; }
       function selectAcademicCalendarPages(pages){
         const selected=pages.filter((page)=>page.number>=3&&page.number<=25&&page.number%2===1);
@@ -4788,7 +4788,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         if (error instanceof TypeError) return "중식에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 불러와 주세요.";
         return message || "중식 정보를 불러오지 못했습니다.";
       }
-      function rememberLunch(key, items, fetchedAt = new Date().toISOString()) {
+      function rememberLunch(key, items, fetchedAt = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString()) {
         const entry = { date: key, items, fetchedAt };
         mealCache.delete(key);
         mealCache.set(key, entry);
@@ -4882,7 +4882,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         status.textContent = month.replace("-", "년 ") + "월 중식을 불러오는 중입니다.";
         try {
           const rows = await fetchNeisLunch(month.replace("-", "") + "01", month.replace("-", "") + last, { apiKey });
-          const fetchedAt = new Date().toISOString(), byDate = new Map();
+          const fetchedAt = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString(), byDate = new Map();
           for (let day = 1; day <= last; day++) {
             const date = month + "-" + String(day).padStart(2, "0");
             byDate.set(date, { date, items: [], fetchedAt });
@@ -5391,7 +5391,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           const row = a.homerooms.find((h) => h.className === target.dataset.homeroom);
           if (row) row[target.dataset.field] = target.value;
         } else return;
-        a.updatedAt = /* @__PURE__ */ new Date().toISOString();
+        a.updatedAt = /* @__PURE__ */ new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString();
         if (!pending) persist();
       }
       function checkAssignmentInput(event) {
@@ -5497,7 +5497,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           pendingAssignment = {
             ...result.assignments,
             filename: file.name,
-            updatedAt: /* @__PURE__ */ new Date().toISOString(),
+            updatedAt: /* @__PURE__ */ new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString(),
           };
           $("#preview-message").textContent =
             `직책 ${result.rolesRead}/8개 · 담임·부담임 ${result.roomsRead}/33개 학반을 읽었습니다. 아래 결과를 확인해 주세요.`;
