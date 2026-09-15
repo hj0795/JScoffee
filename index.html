@@ -2633,6 +2633,18 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
 .daily-overview .meal-empty { 
   font-size: 10px !important; 
 }
+
+/* 달력 위 안내 영역을 한 줄로 압축 (모바일 폭 미만에서만 기존처럼 줄바꿈) */
+@media (min-width: 761px) {
+  .page-heading { flex-wrap: nowrap !important; gap: 12px !important; }
+  .usage-guide { flex: 1 1 auto !important; min-width: 0 !important; gap: 6px !important; font-size: 12.5px !important; overflow: hidden !important; }
+  .usage-guide span { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+  .usage-guide br.mobile-break { display: none !important; }
+  .guide-dot { width: 20px !important; height: 20px !important; font-size: 13px !important; flex: 0 0 auto !important; }
+  .page-heading .schedule-alert { flex: 0 1 auto !important; order: 0 !important; min-width: 0 !important; padding-left: 12px !important; border-left: 1px solid #e2e8f1 !important; }
+  .page-heading .schedule-alert p { font-size: 10.5px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+  .page-heading .view-tabs { flex: 0 0 auto !important; }
+}
     </style>
   </head>
   <body>
