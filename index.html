@@ -2601,22 +2601,29 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         .daily-overview .meal-face small { font-size: 9px !important; }
         .meal-actions { bottom: 6px !important; left: 10px !important; right: 10px !important; }
 
-  /* 중식/석식 개별 메뉴는 줄바꿈 없이, 전체 목록은 카드 크기에 맞춰 다음 줄로 넘어가도록 수정 */
+/* 중식/석식 메뉴 자동 줄바꿈 및 모바일 최적화 */
 .daily-overview .meal-list { 
   display: flex !important; 
   flex-direction: row !important; 
   flex-wrap: wrap !important; 
-  width: 100% !important; /* 👈 가로 길이를 카드 100%로 꽉 잡아주는 핵심 코드 */
-  box-sizing: border-box !important; /* 👈 패딩이나 마진 때문에 밖으로 튀어나가는 것 방지 */
+  width: 100% !important; 
+  box-sizing: border-box !important; 
   overflow: hidden !important; 
-  gap: 8px !important; 
+  /* 💡 상하 간격은 2px로 좁히고, 좌우 간격은 8px로 유지해서 4줄이 들어가게 압축 */
+  gap: 2px 8px !important; 
   font-size: 10px !important; 
-  line-height: 1.4 !important; 
+  line-height: 1.1 !important; /* 💡 줄 간격을 1.1로 타이트하게 축소 */
 }
+
+/* 💡 핵심: 맨 첫 번째 메뉴(주로 밥)를 모바일 화면에서 숨김 */
+.daily-overview .meal-list li:first-child {
+  display: none !important;
+}
+
 .daily-overview .meal-list li { 
   padding-left: 8px !important; 
-  white-space: nowrap !important; /* 개별 메뉴명 중간에 끊기지 않게 보호 */
-  word-break: keep-all !important; /* 단어 단위로 깔끔하게 유지 */
+  white-space: nowrap !important; 
+  word-break: keep-all !important; 
   flex: 0 0 auto !important; 
 }
 .daily-overview .meal-list li::before { 
