@@ -3122,6 +3122,33 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
     </svg>
     <!-- 앱 동작: 함수 이름으로 검색해 수정하세요. -->
     <script type="module">
+      function safeRandomUUID() {
+        if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+          try {
+            return crypto.randomUUID();
+          } catch (e) {}
+        }
+        if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+          try {
+            const buf = new Uint8Array(16);
+            crypto.getRandomValues(buf);
+            buf[6] = (buf[6] & 0x0f) | 0x40;
+            buf[8] = (buf[8] & 0x3f) | 0x80;
+            const hex = Array.from(buf, (b) => b.toString(16).padStart(2, "0")).join("");
+            return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+          } catch (e) {}
+        }
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+          const r = (Math.random() * 16) | 0;
+          const v = c === "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+      }
+      try {
+        if (typeof crypto !== "undefined" && typeof crypto.randomUUID !== "function") {
+          crypto.randomUUID = safeRandomUUID;
+        }
+      } catch (e) {}
       // 1. 공강 계산과 PDF 공통 처리
       var DAYS = ["월", "화", "수", "목", "금"];
       var TIMES = [
@@ -3729,7 +3756,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           if (!sourceLabelKeys.has(key)) throw new Error("자료 명칭을 확인해 주세요.");
           const value = String(displayName ?? "").trim();
           if (!value) throw new Error("파일 명칭을 비워 둘 수 없습니다.");
-          const revision = crypto.randomUUID();
+          const revision = safeRandomUUID();
           await updateDoc(current, {
             [`sourceFileLabels.${key}.displayName`]: value,
             [`sourceFileLabels.${key}.updatedAt`]: serverTimestamp(),
@@ -4571,7 +4598,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
         const files = structuredClone(state.sourceFiles || defaultSourceFiles());
         const now = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString();
         for (const [kind, file, data] of entries) {
-          sections[kind] = { ...data, filename: file.name, updatedAt: now, revision: crypto.randomUUID() };
+          sections[kind] = { ...data, filename: file.name, updatedAt: now, revision: safeRandomUUID() };
           const def = SOURCE_DEFS.find((item) => item.field === kind || item.key === kind);
           const sourceKey = def?.key || kind;
           const previous = files[sourceKey] || { initialName: def?.initialName || file.name, displayName: def?.initialName || file.name };
@@ -4906,7 +4933,7 @@ initial-data는 최초 등록용이며, 공용 DB가 등록된 뒤에는 자동�
           }
           const days = [...(state.lunchMeals?.days || []).filter((day) => !day.date.startsWith(month + "-")), ...byDate.values()]
             .sort((a, b) => a.date.localeCompare(b.date)).slice(-400);
-          const section = { days, updatedAt: fetchedAt, revision: crypto.randomUUID() };
+          const section = { days, updatedAt: fetchedAt, revision: safeRandomUUID() };
           const result = await cloud.saveLunchMeals(section, expectedVersion);
           for (const day of byDate.values()) rememberLunch(day.date, day.items, fetchedAt);
           adopt(result, renderOptionsForSections(["lunchMeals"]));
